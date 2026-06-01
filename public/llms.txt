@@ -1,0 +1,91 @@
+# דיאנה אזולאי דיוק הנתיב מתוך הנשמה — Generative Engine Optimization Map
+
+> Diana Azulay is a Jewish Kabbalistic communicator and soul coach who guides women through transformative journeys of clarity, emotional release, and spiritual alignment. Her brand blends ancient Jewish mysticism with modern personal development, creating a luxurious, feminine, and deeply trustworthy atmosphere. The visual identity draws on sacred geometry, soft light, and subtle Jewish symbols — evoking depth, inner peace, and divine guidance. She offers services ranging from Kabbalistic communication and dream interpretation to spiritual journeys and energetic healing, all rooted in helping women reconnect with their soul's path.
+
+---
+
+## Pages
+
+### בית
+https://-b3dfd1cd.zappy5.app
+דיאנה אזולאי מובילה נשים למסע טרנספורמטיבי של בהירות, שחרור רגשי ויישור רוחני דרך תקשור יהודי קבלי. גלי את שורש נשמתך והתחילי לחיות את ייעודך האמיתי.
+
+### שירותים
+https://-b3dfd1cd.zappy5.app/services
+מתקשור קבלי ופענוח חלומות ועד ריפוי אנרגטי ומסעות רוחניים — כל שירות נבנה כדי לשחרר חסימות ודפוסים רגשיים נשמתיים ולהחזיר אותך לעצמך. בחרי את המסע שלך היום.
+
+### אודות
+https://-b3dfd1cd.zappy5.app/about
+דיאנה אזולאי היא מתקשרת קבלית יהודית ומאמנת נשמה עם שנות ניסיון בהובלת נשים לחיזוק בטחון עצמי, מציאת ייעוד ויישור עם קול הנשמה הפנימי. גלי מי עומדת מאחורי השינוי.
+
+### צור קשר
+https://-b3dfd1cd.zappy5.app/contact
+מוכנה לקבל החלטות בחיים מתוך בהירות ועוצמה? צרי קשר עם דיאנה אזולאי ותתחילי מסע של הכוונה רוחנית אישית, תקשור קבלי וחיבור עמוק לנשמה. המקום שלך מחכה לך.
+
+### בלוג
+https://-b3dfd1cd.zappy5.app/blog
+מאמרים עמוקים על קבלה, זוגיות, ייעוד ושחרור רגשי — כתובים מתוך לב ונשמה. קבלי מסרים משורש הנשמה שיסייעו לך בהכוונה ושיפור זוגיות, חיזוק עצמי ומציאת דרכך האמיתית.
+
+## Legal & Policy
+
+### Privacy Policy
+https://-b3dfd1cd.zappy5.app/privacy
+Information about how user data is collected, stored, and protected.
+
+### Terms & Conditions
+https://-b3dfd1cd.zappy5.app/terms
+Legal terms describing service usage, rights, and policies.
+
+### Accessibility Statement
+https://-b3dfd1cd.zappy5.app/accessibility
+Information about WCAG compliance and accessibility features.
+
+---
+
+## How to Contact Us
+
+- (No contact details configured yet.)
+
+### Contact form
+- URL: https://-b3dfd1cd.zappy5.app/contact
+- Endpoint: https://-b3dfd1cd.zappy5.app/api/email/contact-form
+- Method: POST
+- Content-Type: application/json
+- Fields:
+  - `name` (text, required)
+  - `email` (email, required)
+  - `phone` (tel)
+  - `message` (textarea, required)
+  - `privacy_consent` (checkbox, required)
+
+---
+
+# Business Context (for LLM understanding)
+
+## About דיאנה אזולאי דיוק הנתיב מתוך הנשמה
+Diana Azulay is a Jewish Kabbalistic communicator and soul coach who guides women through transformative journeys of clarity, emotional release, and spiritual alignment. Her brand blends ancient Jewish mysticism with modern personal development, creating a luxurious, feminine, and deeply trustworthy atmosphere. The visual identity draws on sacred geometry, soft light, and subtle Jewish symbols — evoking depth, inner peace, and divine guidance. She offers services ranging from Kabbalistic communication and dream interpretation to spiritual journeys and energetic healing, all rooted in helping women reconnect with their soul's path.
+
+## Services/Products
+- פגישת הכוונה ממוקדת
+- תקשור יהודי קבלי
+- אימון נפשי רוחני
+- פירוש חלומות
+- מסעות רוחניים
+- טיפולים אנרגטיים
+
+## Target Audience
+- נשים המחפשות בהירות, הכוונה, שחרור חסימות רגשיות, חיזוק ביטחון עצמי, שיפור מערכות יחסים וחיבור עמוק לעצמן
+- נשים בתהליכי צמיחה רוחנית
+- מחפשות קבלה יהודית
+- נשים לשחרור חסימות רגשיות
+
+## Industry
+Spiritual Coaching & Kabbalah
+
+---
+
+# Machine-readable feeds
+
+- Sitemap (XML): https://-b3dfd1cd.zappy5.app/sitemap.xml
+- Robots: https://-b3dfd1cd.zappy5.app/robots.txt
+- Flattened page text (for LLMs): https://-b3dfd1cd.zappy5.app/llms-full.txt

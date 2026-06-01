@@ -2,13 +2,13 @@
 
 Diana Azulay is a Jewish Kabbalistic communicator and soul coach who guides women through transformative journeys of clarity, emotional release, and spiritual alignment. Her brand blends ancient Jewish mysticism with modern personal development, creating a luxurious, feminine, and deeply trustworthy atmosphere. The visual identity draws on sacred geometry, soft light, and subtle Jewish symbols — evoking depth, inner peace, and divine guidance. She offers services ranging from Kabbalistic communication and dream interpretation to spiritual journeys and energetic healing, all rooted in helping women reconnect with their soul's path.
 
-Source: https://-b3dfd1cd.zappy5.app
+Source: https://example.com
 
 ---
 
 ## התעוררי לנתיב נשמתך עם תקשור יהודי קבלי — דיאנה אזולאי דיוק הנתיב מתוך הנשמה
 
-URL: https://-b3dfd1cd.zappy5.app
+URL: https://example.com
 Description: דיאנה אזולאי מובילה נשים למסע טרנספורמטיבי של בהירות, שחרור רגשי ויישור רוחני דרך תקשור יהודי קבלי. גלי את שורש נשמתך והתחילי לחיות את ייעודך האמיתי.
 
 התעוררי לנתיב נשמתך עם תקשור יהודי קבלי — דיאנה אזולאי דיוק הנתיב מתוך הנשמה
@@ -552,7 +552,7 @@ Description: דיאנה אזולאי מובילה נשים למסע טרנספו
 
 ## שירותים שמשנים חיים מהשורש — דיאנה אזולאי דיוק הנתיב מתוך הנשמה
 
-URL: https://-b3dfd1cd.zappy5.app/services
+URL: https://example.com/services
 Description: מתקשור קבלי ופענוח חלומות ועד ריפוי אנרגטי ומסעות רוחניים — כל שירות נבנה כדי לשחרר חסימות ודפוסים רגשיים נשמתיים ולהחזיר אותך לעצמך. בחרי את המסע שלך היום.
 
 שירותים שמשנים חיים מהשורש — דיאנה אזולאי דיוק הנתיב מתוך הנשמה
@@ -1294,7 +1294,7 @@ Description: מתקשור קבלי ופענוח חלומות ועד ריפוי �
 
 ## הכירי את דיאנה — המתקשרת שתוביל אותך הביתה — דיאנה אזולאי דיוק הנתיב מתוך הנשמה
 
-URL: https://-b3dfd1cd.zappy5.app/about
+URL: https://example.com/about
 Description: דיאנה אזולאי היא מתקשרת קבלית יהודית ומאמנת נשמה עם שנות ניסיון בהובלת נשים לחיזוק בטחון עצמי, מציאת ייעוד ויישור עם קול הנשמה הפנימי. גלי מי עומדת מאחורי השינוי.
 
 הכירי את דיאנה — המתקשרת שתוביל אותך הביתה — דיאנה אזולאי דיוק הנתיב מתוך הנשמה
@@ -1924,7 +1924,7 @@ Description: דיאנה אזולאי היא מתקשרת קבלית יהודית
 
 ## צעד אחד מפריד בינך לבין הנתיב — דיאנה אזולאי דיוק הנתיב מתוך הנשמה
 
-URL: https://-b3dfd1cd.zappy5.app/contact
+URL: https://example.com/contact
 Description: מוכנה לקבל החלטות בחיים מתוך בהירות ועוצמה? צרי קשר עם דיאנה אזולאי ותתחילי מסע של הכוונה רוחנית אישית, תקשור קבלי וחיבור עמוק לנשמה. המקום שלך מחכה לך.
 
 צעד אחד מפריד בינך לבין הנתיב — דיאנה אזולאי דיוק הנתיב מתוך הנשמה
@@ -2574,7 +2574,7 @@ Description: מוכנה לקבל החלטות בחיים מתוך בהירות �
 
 ## תובנות מהנשמה שישנו את הדרך שאת רואה את עצמך — דיאנה אזולאי דיוק הנתיב מתוך הנשמה
 
-URL: https://-b3dfd1cd.zappy5.app/blog
+URL: https://example.com/blog
 Description: מאמרים עמוקים על קבלה, זוגיות, ייעוד ושחרור רגשי — כתובים מתוך לב ונשמה. קבלי מסרים משורש הנשמה שיסייעו לך בהכוונה ושיפור זוגיות, חיזוק עצמי ומציאת דרכך האמיתית.
 
 תובנות מהנשמה שישנו את הדרך שאת רואה את עצמך — דיאנה אזולאי דיוק הנתיב מתוך הנשמה
@@ -3178,7 +3178,7 @@ Description: מאמרים עמוקים על קבלה, זוגיות, ייעוד �
 
 ## מדיניות פרטיות
 
-URL: https://-b3dfd1cd.zappy5.app/privacy
+URL: https://example.com/privacy
 Description: מדיניות הפרטיות שלנו - כיצד אנו אוספים, משתמשים ומגנים על המידע שלכם
 
 מדיניות פרטיות
@@ -3436,7 +3436,7 @@ Description: מדיניות הפרטיות שלנו - כיצד אנו אוספי
 
 ## הצהרת נגישות
 
-URL: https://-b3dfd1cd.zappy5.app/accessibility
+URL: https://example.com/accessibility
 Description: הצהרת הנגישות שלנו - מחויבותנו לנגישות דיגיטלית
 
 הצהרת נגישות
@@ -3703,7 +3703,7 @@ Description: הצהרת הנגישות שלנו - מחויבותנו לנגיש�
 
 ## תנאי שימוש
 
-URL: https://-b3dfd1cd.zappy5.app/terms
+URL: https://example.com/terms
 Description: תנאי השימוש באתר - הזכויות והחובות של המשתמשים
 
 תנאי שימוש

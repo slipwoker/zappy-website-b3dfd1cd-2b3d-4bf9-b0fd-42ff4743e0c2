@@ -1090,58 +1090,445 @@ html[dir="rtl"] body {
 }
 
 </style>
+
+          <style id="zappy-cta-mobile-style">
+            /* Hide CTA list item on desktop (tablets and up) */
+            @media (min-width: 769px) {
+              .nav-cta-item-mobile {
+                display: none !important;
+              }
+            }
+            /* Show CTA list item on mobile */
+            @media (max-width: 768px) {
+              .nav-cta-item-mobile {
+                display: list-item !important;
+              }
+            }
+          </style>
+        
+          <style id="zappy-nested-menu-style">
+            /* Desktop only: vertically center nav items */
+            @media (min-width: 769px) {
+              .nav-menu,
+              #navMenu {
+                align-items: center !important;
+              }
+            }
+            
+            /* Menu Group styling (non-clickable parent) - TOP LEVEL ONLY with ultra-specific selector */
+            .nav-menu > li > .menu-group-title,
+            #navMenu > li > .menu-group-title {
+              display: inline-block !important;
+              padding: 0.5rem 1rem !important;
+              color: var(--nav-color) !important;
+              font-weight: 500 !important;
+              line-height: 1.7 !important;
+              cursor: default !important;
+              user-select: none !important;
+              vertical-align: middle !important;
+              text-decoration: none !important;
+              margin: 0 !important;
+              transition: color 0.3s ease !important;
+            }
+            
+            .nav-menu > li > .menu-group-title:hover,
+            #navMenu > li > .menu-group-title:hover {
+              color: var(--nav-hover-color) !important;
+            }
+            
+            /* Desktop: show submenu on Menu Group hover */
+            li:has(.menu-group-title):hover > .sub-menu {
+              opacity: 1 !important;
+              visibility: visible !important;
+              transform: translateY(0) !important;
+              pointer-events: auto !important; /* Enable interaction when hovering */
+            }
+            
+            /* Hide menu items marked as hidden (overrides hover states) */
+            .zappy-hidden-menu-item,
+            li:has(.menu-group-title):hover > .sub-menu .zappy-hidden-menu-item {
+              display: none !important;
+              opacity: 0 !important;
+              visibility: hidden !important;
+              pointer-events: none !important;
+            }
+            
+            /* Keep submenu visible when hovering over the submenu itself */
+            .sub-menu:hover {
+              opacity: 1 !important;
+              visibility: visible !important;
+              pointer-events: auto !important;
+            }
+            
+            /* Nested dropdown menu styles - using more specific selectors */
+            .nav-menu .sub-menu,
+            nav .sub-menu,
+            .navbar .sub-menu {
+              display: block !important; /* Ensure submenu is in the DOM */
+              position: absolute !important;
+              top: 100%;
+              left: 0;
+              right: auto;
+              min-width: 200px;
+              background: white;
+              box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+              border-radius: 8px;
+              padding: 8px 0;
+              margin-top: 0px; /* Remove gap to prevent hover loss */
+              opacity: 0 !important;
+              visibility: hidden !important;
+              transform: translateY(-10px);
+              transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+              z-index: 1000;
+              list-style: none;
+              pointer-events: none; /* Prevent interaction when hidden */
+            }
+            
+            /* RTL (Hebrew/Arabic) submenu positioning - align to right instead of left */
+            [dir="rtl"] .nav-menu .sub-menu,
+            [dir="rtl"] nav .sub-menu,
+            [dir="rtl"] .navbar .sub-menu,
+            html[lang="he"] .nav-menu .sub-menu,
+            html[lang="he"] nav .sub-menu,
+            html[lang="he"] .navbar .sub-menu,
+            html[lang="ar"] .nav-menu .sub-menu,
+            html[lang="ar"] nav .sub-menu,
+            html[lang="ar"] .navbar .sub-menu {
+              left: auto;
+              right: 0;
+            }
+            
+            /* Show submenu on parent hover - more specific selectors */
+            .nav-menu li:hover > .sub-menu,
+            nav li:hover > .sub-menu,
+            .navbar li:hover > .sub-menu {
+              opacity: 1 !important;
+              visibility: visible !important;
+              transform: translateY(0) !important;
+              pointer-events: auto !important; /* Enable interaction when visible */
+            }
+            
+            /* Parent item must be relatively positioned */
+            .nav-menu li:has(.sub-menu),
+            nav li:has(.sub-menu),
+            .navbar li:has(.sub-menu) {
+              position: relative;
+            }
+            
+            /* Style for submenu items */
+            .sub-menu li {
+              list-style: none;
+              margin: 0;
+              padding: 0;
+            }
+            
+            .sub-menu a,
+            .sub-menu .menu-group-title {
+              display: block !important;
+              padding: 10px 12px !important;
+              color: #333 !important;
+              font-weight: 600 !important;
+              text-decoration: none;
+              transition: background-color 0.2s;
+              white-space: nowrap;
+              cursor: default;
+            }
+            
+            .sub-menu a:hover {
+              background-color: #f5f5f5;
+            }
+            
+            /* CRITICAL: Override submenu styles for TOP-LEVEL Menu Groups only - must come AFTER submenu styles */
+            .nav-menu > li > .menu-group-title,
+            #navMenu > li > .menu-group-title {
+              display: inline-block !important;
+              padding: 0.5rem 1rem !important;
+              color: var(--nav-color) !important;
+              font-weight: 500 !important;
+              line-height: 1.7 !important;
+              cursor: default !important;
+              user-select: none !important;
+              vertical-align: middle !important;
+              text-decoration: none !important;
+              margin: 0 !important;
+              transition: color 0.3s ease !important;
+            }
+            
+            .nav-menu > li > .menu-group-title:hover,
+            #navMenu > li > .menu-group-title:hover {
+              color: var(--nav-hover-color) !important;
+              background-color: transparent !important;
+            }
+            
+            /* On mobile, show nested menus as expandable accordion */
+            @media (max-width: 768px) {
+              /* Mobile submenu styling */
+              .nav-menu .sub-menu,
+              nav .sub-menu,
+              .navbar .sub-menu {
+                position: static !important;
+                transform: none !important;
+                box-shadow: none !important;
+                background: transparent !important;
+                margin-top: 0 !important;
+                max-height: 0;
+                overflow: hidden;
+                opacity: 0;
+                visibility: hidden;
+                transition: max-height 0.3s ease, opacity 0.3s ease, visibility 0.3s ease, padding 0.3s ease;
+                padding: 0 !important;
+                border-radius: 0 !important;
+              }
+              
+              /* Expanded state — no internal scroll; parent navMenu scrolls */
+              .sub-menu.mobile-expanded {
+                max-height: none !important;
+                overflow-y: visible !important;
+                opacity: 1 !important;
+                visibility: visible !important;
+                padding: 8px 0 8px 16px !important;
+              }
+              
+              /* RTL padding adjustment */
+              [dir="rtl"] .sub-menu.mobile-expanded,
+              html[lang="he"] .sub-menu.mobile-expanded,
+              html[lang="ar"] .sub-menu.mobile-expanded {
+                padding: 8px 16px 8px 0 !important;
+              }
+              
+              /* Disable hover behavior on mobile */
+              .nav-menu li:hover > .sub-menu,
+              nav li:hover > .sub-menu,
+              .navbar li:hover > .sub-menu {
+                opacity: 0;
+                visibility: hidden;
+                pointer-events: none;
+              }
+              
+              /* Enable visibility for expanded submenus */
+              .nav-menu li > .sub-menu.mobile-expanded,
+              nav li > .sub-menu.mobile-expanded,
+              .navbar li > .sub-menu.mobile-expanded {
+                opacity: 1 !important;
+                visibility: visible !important;
+                pointer-events: auto !important;
+              }
+              
+              .sub-menu a {
+                padding: 10px 0 !important;
+                display: block !important;
+                font-size: 14px !important;
+                white-space: normal !important;
+              }
+              
+              .sub-menu a:hover {
+                background-color: transparent !important;
+              }
+              
+              /* Parent item wrapper - flex layout with relative positioning for absolute toggle */
+              .nav-menu li:has(.sub-menu),
+              nav li:has(.sub-menu),
+              .navbar li:has(.sub-menu) {
+                display: flex !important;
+                flex-wrap: wrap !important;
+                align-items: center !important;
+                position: relative !important;
+                min-height: 44px !important;
+              }
+              
+              /* Parent link - takes full width since toggle is absolute (not a flex child) */
+              .nav-menu li:has(.sub-menu) > a,
+              nav li:has(.sub-menu) > a,
+              .navbar li:has(.sub-menu) > a,
+              .nav-menu > li > .menu-group-title,
+              #navMenu > li > .menu-group-title {
+                flex: 1 !important;
+                min-width: 0 !important;
+              }
+              
+              /* Normalize menu-group-title in mobile nav to match link alignment */
+              .nav-menu > li > .menu-group-title,
+              #navMenu > li > .menu-group-title {
+                padding: 0 !important;
+                line-height: inherit !important;
+              }
+              
+              /* Submenu takes full width below parent */
+              .nav-menu li:has(.sub-menu) > .sub-menu,
+              nav li:has(.sub-menu) > .sub-menu,
+              .navbar li:has(.sub-menu) > .sub-menu {
+                flex-basis: 100% !important;
+                width: 100% !important;
+              }
+              
+              /* HIDE EXISTING CHEVRONS/ARROWS from cloned sites to prevent duplicates */
+              .nav-menu li:has(.sub-menu) > a .fa-chevron-down,
+              .nav-menu li:has(.sub-menu) > a .fa-angle-down,
+              .nav-menu li:has(.sub-menu) > a [class*="chevron"],
+              .nav-menu li:has(.sub-menu) > a [class*="arrow"],
+              nav li:has(.sub-menu) > a [class*="chevron"],
+              nav li:has(.sub-menu) > a [class*="arrow"],
+              #navMenu li:has(.sub-menu) > a [class*="chevron"],
+              #navMenu li:has(.sub-menu) > a [class*="arrow"] {
+                display: none !important;
+                visibility: hidden !important;
+              }
+              
+              /* Toggle arrow button - flex child that stretches to match nav-link height */
+              .mobile-submenu-toggle {
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                width: 44px !important;
+                height: auto !important;
+                background: transparent !important;
+                border: none !important;
+                cursor: pointer !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                position: static !important;
+                flex-shrink: 0 !important;
+                align-self: stretch !important;
+                z-index: 2 !important;
+                -webkit-tap-highlight-color: transparent;
+              }
+              
+              .mobile-submenu-toggle::after {
+                content: '' !important;
+                display: block !important;
+                width: 0 !important;
+                height: 0 !important;
+                border-left: 6px solid transparent !important;
+                border-right: 6px solid transparent !important;
+                border-top: 7px solid currentColor !important;
+                transition: transform 0.3s ease !important;
+              }
+              
+              /* Rotate arrow when expanded */
+              .mobile-submenu-toggle.expanded::after {
+                transform: rotate(180deg) !important;
+              }
+            }
+            
+            /* Hide toggle button on desktop */
+            @media (min-width: 769px) {
+              .mobile-submenu-toggle {
+                display: none !important;
+              }
+            }
+          </style>
+          
+          <script id="zappy-mobile-menu-script">
+            // Mobile menu toggle for nested submenus (including Menu Groups)
+            // Uses separate toggle button - link navigates, arrow toggles submenu
+            (function() {
+              function initMobileMenuToggles() {
+                // Only run on mobile
+                if (window.innerWidth > 768) {
+                  // Remove any toggle buttons on desktop
+                  document.querySelectorAll('.mobile-submenu-toggle').forEach(btn => btn.remove());
+                  document.querySelectorAll('.sub-menu.mobile-expanded').forEach(menu => {
+                    menu.classList.remove('mobile-expanded');
+                  });
+                  console.log('[MOBILE MENU] Desktop mode - cleanup done');
+                  return;
+                }
+                
+                console.log('[MOBILE MENU] Initializing mobile menu toggles...');
+                
+                // Find all parent menu items (items with .sub-menu)
+                const menuItemsWithSubmenus = document.querySelectorAll(
+                  '.nav-menu li:has(.sub-menu), nav li:has(.sub-menu), .navbar li:has(.sub-menu), #navMenu li:has(.sub-menu)'
+                );
+                
+                console.log('[MOBILE MENU] Found', menuItemsWithSubmenus.length, 'items with submenus');
+                
+                menuItemsWithSubmenus.forEach(function(li) {
+                  // Skip if already has toggle button
+                  if (li.querySelector('.mobile-submenu-toggle')) {
+                    return;
+                  }
+                  
+                  const submenu = li.querySelector('.sub-menu');
+                  const parentLink = li.querySelector(':scope > a') || li.querySelector(':scope > .menu-group-title');
+                  
+                  if (!submenu || !parentLink) return;
+                  
+                  // Create toggle button
+                  const toggleBtn = document.createElement('button');
+                  toggleBtn.className = 'mobile-submenu-toggle';
+                  toggleBtn.setAttribute('aria-label', 'Toggle submenu');
+                  toggleBtn.setAttribute('type', 'button');
+
+                  // Insert toggle button after the link
+                  parentLink.insertAdjacentElement('afterend', toggleBtn);
+                  
+                  console.log('[MOBILE MENU] Created toggle button for:', parentLink.textContent?.trim());
+                  
+                  // Handle toggle button click - only toggles submenu
+                  toggleBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const isExpanded = submenu.classList.contains('mobile-expanded');
+                    
+                    // Close all other submenus first
+                    document.querySelectorAll('.sub-menu.mobile-expanded').forEach(function(menu) {
+                      if (menu !== submenu) {
+                        menu.classList.remove('mobile-expanded');
+                        const otherToggle = menu.parentElement.querySelector('.mobile-submenu-toggle');
+                        if (otherToggle) otherToggle.classList.remove('expanded');
+                      }
+                    });
+                    
+                    // Toggle this submenu
+                    submenu.classList.toggle('mobile-expanded');
+                    toggleBtn.classList.toggle('expanded');
+                    
+                    console.log('[MOBILE MENU] Toggled submenu:', !isExpanded ? 'expanded' : 'collapsed');
+                  });
+                  
+                  // Parent link navigates normally - no preventDefault
+                });
+              }
+              
+              // Initialize on DOM load
+              if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initMobileMenuToggles);
+              } else {
+                initMobileMenuToggles();
+              }
+              
+              // Re-initialize on window resize (but use debounce to avoid too many calls)
+              let resizeTimer;
+              window.addEventListener('resize', function() {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(initMobileMenuToggles, 250);
+              });
+              
+              // Also initialize when mobile menu becomes visible
+              // This handles cases where the mobile menu is hidden initially
+              const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                  if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                    const target = mutation.target;
+                    if (target.classList.contains('active') || target.style.display !== 'none') {
+                      console.log('[MOBILE MENU] Mobile menu became visible, re-initializing...');
+                      setTimeout(initMobileMenuToggles, 100);
+                    }
+                  }
+                });
+              });
+              
+              // Observe mobile menu containers
+              const mobileMenus = document.querySelectorAll('.mobile-menu, .nav-menu, #navMenu');
+              mobileMenus.forEach(function(menu) {
+                observer.observe(menu, { attributes: true, attributeFilter: ['class', 'style'] });
+              });
+            })();
+          </script>
     <link rel="stylesheet" href="/styles.css">
     <script>window.ZAPPY_WEBSITE_ID = "b3dfd1cd-2b3d-4bf9-b0fd-42ff4743e0c2"; window.ZAPPY_API_BASE = "https://api.zappy5.com";</script>
-
-    <style id="zappy-dropdown-submenu-styles">
-      /* ========== DESKTOP DROPDOWN SUBMENU STYLES ========== */
-      /* Base styles for dropdown submenus - parent must be positioned */
-      .nav-menu li:has(.sub-menu), nav li:has(.sub-menu), .navbar li:has(.sub-menu), #navMenu li:has(.sub-menu) { position: relative; }
-      /* Submenu base - hidden by default */
-      .nav-menu .sub-menu, nav .sub-menu, .navbar .sub-menu, #navMenu .sub-menu { display: block !important; position: absolute !important; top: 100%; left: 0; min-width: 220px; background: white; border-radius: 8px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); padding: 8px 0; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.3s ease; z-index: 1000; list-style: none; pointer-events: none; }
-      /* CRITICAL: Desktop hover styles to show dropdown */
-      .nav-menu li:hover > .sub-menu, nav li:hover > .sub-menu, .navbar li:hover > .sub-menu, #navMenu li:hover > .sub-menu { opacity: 1 !important; visibility: visible !important; transform: translateY(0) !important; pointer-events: auto !important; }
-      /* Submenu item styling */
-      .sub-menu li { list-style: none; margin: 0; padding: 0; }
-      .sub-menu a { display: block !important; padding: 10px 16px !important; color: var(--text-dark, #333) !important; font-weight: 500; text-decoration: none; white-space: nowrap; transition: background-color 0.2s; }
-      .sub-menu .zappy-nav-child > a { padding-left: 28px !important; font-size: 0.9em !important; opacity: 0.85 !important; }
-      [dir="rtl"] .sub-menu .zappy-nav-child > a, html[lang="he"] .sub-menu .zappy-nav-child > a, html[lang="ar"] .sub-menu .zappy-nav-child > a { padding-left: 10px !important; padding-right: 28px !important; }
-      .sub-menu .zappy-nav-parent > a { font-weight: 600 !important; }
-      .sub-menu a:hover { background-color: #f5f5f5; }
-      /* RTL (Hebrew/Arabic) dropdown positioning */
-      [dir="rtl"] .nav-menu .sub-menu, [dir="rtl"] nav .sub-menu, [dir="rtl"] .navbar .sub-menu, html[lang="he"] .nav-menu .sub-menu, html[lang="he"] nav .sub-menu, html[lang="he"] .navbar .sub-menu, html[lang="ar"] .nav-menu .sub-menu, html[lang="ar"] nav .sub-menu, html[lang="ar"] .navbar .sub-menu { left: auto !important; right: 0 !important; }
-      /* Hide empty dropdown menus (exclude catalog sub-menus that use <a> children instead of <li>) */
-      .sub-menu:empty, .sub-menu:not(:has(li:not(.zappy-hidden-menu-item))):not(:has(> a)), .sub-menu:not(:has(li)):not(:has(> a)) { display: none !important; opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; }
-      /* Desktop: show submenu on Menu Group hover */
-      li:has(.menu-group-title):hover > .sub-menu { opacity: 1 !important; visibility: visible !important; transform: translateY(0) !important; pointer-events: auto !important; }
-      /* Menu Group title styling */
-      .nav-menu > li > .menu-group-title, #navMenu > li > .menu-group-title { display: inline-block; padding: 0.5rem 1rem; cursor: default; user-select: none; }
-      
-      /* ========== MOBILE SUBMENU STYLES ========== */
-      @media (max-width: 768px) {
-        .nav-menu .sub-menu, nav .sub-menu, .navbar .sub-menu, #navMenu .sub-menu { position: static !important; transform: none !important; box-shadow: none !important; background: transparent !important; max-height: 0; overflow: hidden; opacity: 0; visibility: hidden; transition: max-height 0.3s ease, opacity 0.3s ease; padding: 0 !important; border-radius: 0 !important; }
-        .navbar .sub-menu.mobile-expanded, .nav-menu .sub-menu.mobile-expanded, #navMenu .sub-menu.mobile-expanded { max-height: none !important; overflow-y: visible !important; opacity: 1 !important; visibility: visible !important; padding: 8px 0 8px 16px !important; }
-        [dir="rtl"] .sub-menu.mobile-expanded, html[lang="he"] .sub-menu.mobile-expanded { padding: 8px 16px 8px 0 !important; }
-        /* Disable hover behavior on mobile */
-        .nav-menu li:hover > .sub-menu, nav li:hover > .sub-menu, .navbar li:hover > .sub-menu, #navMenu li:hover > .sub-menu { opacity: 0; visibility: hidden; pointer-events: none; }
-        .nav-menu li > .sub-menu.mobile-expanded, nav li > .sub-menu.mobile-expanded, .navbar li > .sub-menu.mobile-expanded, #navMenu li > .sub-menu.mobile-expanded { opacity: 1 !important; visibility: visible !important; pointer-events: auto !important; }
-        .nav-menu li:has(.sub-menu), nav li:has(.sub-menu), .navbar li:has(.sub-menu), #navMenu li:has(.sub-menu) { display: flex !important; flex-wrap: wrap !important; align-items: center !important; position: relative !important; min-height: 44px !important; }
-        .nav-menu li:has(.sub-menu) > a, nav li:has(.sub-menu) > a, .navbar li:has(.sub-menu) > a, #navMenu li:has(.sub-menu) > a { flex: 1 !important; min-width: 0 !important; }
-        .nav-menu li:has(.sub-menu) > .menu-group-title, nav li:has(.sub-menu) > .menu-group-title, .navbar li:has(.sub-menu) > .menu-group-title, #navMenu li:has(.sub-menu) > .menu-group-title { flex: 1 !important; min-width: 0 !important; padding: 0 !important; line-height: inherit !important; }
-        .nav-menu li:has(.sub-menu) > .sub-menu, nav li:has(.sub-menu) > .sub-menu, .navbar li:has(.sub-menu) > .sub-menu, #navMenu li:has(.sub-menu) > .sub-menu { flex-basis: 100% !important; width: 100% !important; }
-        .nav-menu li:has(.sub-menu) > a [class*="chevron"], .nav-menu li:has(.sub-menu) > a [class*="arrow"], .nav-menu li:has(.sub-menu) > a .fa-chevron-down, .nav-menu li:has(.sub-menu) > a .fa-angle-down, nav li:has(.sub-menu) > a [class*="chevron"], nav li:has(.sub-menu) > a [class*="arrow"], #navMenu li:has(.sub-menu) > a [class*="chevron"], #navMenu li:has(.sub-menu) > a [class*="arrow"] { display: none !important; visibility: hidden !important; }
-        .mobile-submenu-toggle { display: flex !important; align-items: center !important; justify-content: center !important; width: 44px !important; height: auto !important; background: transparent !important; border: none !important; cursor: pointer !important; color: var(--text-light) !important; position: static !important; flex-shrink: 0 !important; align-self: stretch !important; z-index: 2 !important; padding: 0 !important; margin: 0 !important; }
-        .mobile-submenu-toggle::after { content: '' !important; width: 0 !important; height: 0 !important; border-left: 6px solid transparent !important; border-right: 6px solid transparent !important; border-top: 7px solid currentColor !important; transition: transform 0.3s ease !important; }
-        .mobile-submenu-toggle.expanded::after { transform: rotate(180deg) !important; }
-        .sub-menu a { padding: 10px 0 !important; display: block !important; color: var(--text-light) !important; white-space: normal !important; }
-        .sub-menu .zappy-nav-child > a { padding-left: 28px !important; font-size: 0.9em !important; opacity: 0.85 !important; }
-        [dir="rtl"] .sub-menu .zappy-nav-child > a, html[lang="he"] .sub-menu .zappy-nav-child > a, html[lang="ar"] .sub-menu .zappy-nav-child > a { padding-left: 0 !important; padding-right: 28px !important; }
-        .sub-menu .zappy-nav-parent > a { font-weight: 600 !important; }
-        .nav-menu.active, #navMenu.active { max-width: 100vw !important; overflow-x: hidden !important; box-sizing: border-box !important; }
-        .navbar .sub-menu li a, nav.navbar .sub-menu li a, .zappy-products-dropdown .sub-menu a { color: var(--text-light) !important; }
-      }
-      @media (min-width: 769px) { .mobile-submenu-toggle { display: none !important; } }
-    </style>
 
     <style id="zappy-widget-visibility">
       html[dir="rtl"] .whatsapp-float { right: 20px !important; left: auto !important; }
@@ -1201,7 +1588,7 @@ html[dir="rtl"] body {
   <div class="nav-container">
     <div class="nav-right-group"><div class="nav-brand">
       <a href="/" class="logo-link"><img class="logo" src="/assets/spiritual-coaching-kabbalah-logo-1780607993723-a06vdi.webp?v=1780607994054-w0jl7e" alt="דיאנה אזולאי דיוק הנתיב מתוך הנשמה" data-i18n-alt="contact_alt_100"></a>
-    </div><ul class="nav-menu" id="navMenu"><li><a href="/" data-i18n="contact_nav_91">בית</a></li><li><a href="/services" data-i18n="contact_nav_92">שירותים</a></li><li><a href="/about" data-i18n="contact_nav_93">אודות</a></li><li><a href="/blog" data-i18n="contact_nav_94">בלוג</a></li></ul></div>
+    </div><ul class="nav-menu" id="navMenu"><li><a href="/about" data-i18n="contact_nav_93">אודות</a></li><li><a href="/services" data-i18n="contact_nav_92">שירותים</a></li><li><a href="/blog" data-i18n="contact_nav_94">בלוג</a></li><li class="nav-cta-item-mobile"><a href="/contact">צור קשר</a></li></ul></div>
 
     
 
@@ -2143,10 +2530,10 @@ html[dir="rtl"] body {
     <!-- Testimonial card -->
     <figure class="csp-testimonial-card">
       <!-- Decorative quote mark -->
-      <div class="csp-quote-mark" aria-hidden="true">"</div>
+      <div class="csp-quote-mark" aria-hidden="true">“</div>
 
       <blockquote class="csp-quote-text" data-i18n="contact_quote_88">
-        "הגעתי לדיאנה עם ראש עמוס, לב כבד ותחושה שאני לא מוצאת את עצמי. תוך פגישה אחת הרגשתי שמישהי מחזיקה אותי באמת – בלי שיפוטיות, עם כל כך הרבה חום ובהירות. היא עזרה לי לראות את עצמי מחדש, לשחרר דפוסים שנשאתי שנים, ולהבין לאן הנשמה שלי באמת רוצה ללכת. זה לא היה ייעוץ – זה היה מסע."
+        “הגעתי לדיאנה עם ראש עמוס, לב כבד ותחושה שאני לא מוצאת את עצמי. תוך פגישה אחת הרגשתי שמישהי מחזיקה אותי באמת – בלי שיפוטיות, עם כל כך הרבה חום ובהירות. היא עזרה לי לראות את עצמי מחדש, לשחרר דפוסים שנשאתי שנים, ולהבין לאן הנשמה שלי באמת רוצה ללכת. זה לא היה ייעוץ – זה היה מסע.”
       </blockquote>
 
       <figcaption class="csp-attribution" data-i18n="contact_caption_87">
@@ -2230,19 +2617,15 @@ html[dir="rtl"] body {
 
       <!-- Column 4: Hours -->
       <div class="footer-col footer-hours">
-        <h3 class="footer-heading" data-i18n="contact_h3_19" style="color: #3D2358"><span class="heading-accent" style="color: #3D2358"></span>שעות פעילות</h3>
+        <h3 class="footer-heading" data-i18n="contact_h3_19"><span class="heading-accent"></span>שעות פעילות</h3>
         <ul class="hours-list" aria-label="שעות פעילות" data-i18n-aria-label="contact_aria_label_109">
-          <li><a href="/" data-i18n="new_a_256"><span class="day" style="color: #3D2358">יום ראשון</span>&nbsp;<span class="time" style="color: #3D2358">09:00 – 17:00</span></a></li>
-          <li><a href="/" data-i18n="new_a_259"><span class="day" style="color: #3D2358">יום שני</span>&nbsp;<span class="time" style="color: #3D2358">09:00 – 17:00</span></a></li>
-          <li><a href="/" data-i18n="new_a_262"><span class="day" style="color: #3D2358">יום שלישי</span>&nbsp;<span class="time" style="color: #3D2358">09:00 – 17:00</span></a></li>
-          <li><a href="/" data-i18n="new_a_265"><span class="day" style="color: #3D2358">יום רביעי</span>&nbsp;<span class="time" style="color: #3D2358">09:00 – 17:00</span></a></li>
-          <li><a href="/" data-i18n="new_a_268"><span class="day" style="color: #3D2358">יום חמישי</span>&nbsp;<span class="time" style="color: #3D2358">09:00 – 17:00</span></a></li>
-          <li><a href="/" data-i18n="new_a_271"><span class="day" style="color: #3D2358">יום שישי</span>&nbsp;<span class="time closed" style="color: #3D2358">סגור</span></a></li>
-          <li><a href="/" data-i18n="new_a_274"><span class="day" style="color: #3D2358">יום שבת</span>&nbsp;<span class="time closed" style="color: #3D2358">סגור</span></a></li>
+          <li><a href="/" data-i18n="contact_link_74"><span class="day">ראשון – חמישי</span><span class="time">09:00 – 20:00</span></a></li>
+          <li><a href="/" data-i18n="contact_link_75"><span class="day">שישי</span><span class="time">09:00 – 14:00</span></a></li>
+          <li><a href="/" data-i18n="contact_link_76"><span class="day">שבת</span><span class="time closed">סגור</span></a></li>
         </ul>
-        <div class="footer-badge footer-badge--gold" data-i18n="contact_div_90" style="color: #3D2358">
+        <div class="footer-badge footer-badge--gold" data-i18n="contact_div_90">
           <i class="fas fa-infinity"></i>
-          <span style="color: #3D2358">זמין לפגישות אונליין</span>
+          <span>זמין לפגישות אונליין</span>
         </div>
       </div>
 
@@ -2277,8 +2660,6 @@ html[dir="rtl"] body {
   </a>
   
   <div data-integration="accessibility:toolbar"></div>
-
-
 
 
 
@@ -2615,41 +2996,8 @@ html[dir="rtl"] body {
       "home_p_35": "מלווה נשים בתהליכי בהירות, הכוונה וחיבור לנשמה",
       "home_p_36": "ליווי רוחני מעמיק דרך חכמת הקבלה — מסע אל תוך הנשמה, לגילוי האור שבך ולחיים של שלמות ומשמעות אמיתית.",
       "home_p_37": "© 2026 דיאנה אזולאי דיוק הנתיב מתוך הנשמה. כל הזכויות שמורות.",
-      "new_a_170": "<span class=\"day\">יום ראשון</span>&nbsp;<span class=\"time\">09:00 – 17:00</span>",
-      "new_a_173": "<span class=\"day\">יום שני</span>&nbsp;<span class=\"time\">09:00 – 17:00</span>",
-      "new_a_176": "<span class=\"day\">יום שלישי</span>&nbsp;<span class=\"time\">09:00 – 17:00</span>",
-      "new_a_179": "<span class=\"day\">יום רביעי</span>&nbsp;<span class=\"time\">09:00 – 17:00</span>",
-      "new_a_182": "<span class=\"day\">יום חמישי</span>&nbsp;<span class=\"time\">09:00 – 17:00</span>",
-      "new_a_185": "<span class=\"day\">יום שישי</span>&nbsp;<span class=\"time closed\">סגור</span>",
-      "new_a_188": "<span class=\"day\">יום שבת</span>&nbsp;<span class=\"time closed\">סגור</span>",
-      "new_a_201": "<span class=\"day\">ראשון</span>&nbsp;<span class=\"time\">09:00 – 17:00</span>",
-      "new_a_204": "<span class=\"day\">שני</span>&nbsp;<span class=\"time\">09:00 – 17:00</span>",
-      "new_a_207": "<span class=\"day\">שלישי</span>&nbsp;<span class=\"time\">09:00 – 17:00</span>",
-      "new_a_210": "<span class=\"day\">רביעי</span>&nbsp;<span class=\"time\">09:00 – 17:00</span>",
-      "new_a_213": "<span class=\"day\">חמישי</span>&nbsp;<span class=\"time\">09:00 – 17:00</span>",
-      "new_a_216": "<span class=\"day\">שישי</span>&nbsp;<span class=\"time closed\">סגור</span>",
-      "new_a_219": "<span class=\"day\">שבת</span>&nbsp;<span class=\"time closed\">סגור</span>",
-      "new_a_232": "<span class=\"day\">יום ראשון</span>&nbsp;<span class=\"time\">09:00 – 17:00</span>",
-      "new_a_235": "<span class=\"day\">יום שני</span>&nbsp;<span class=\"time\">09:00 – 17:00</span>",
-      "new_a_238": "<span class=\"day\">יום שלישי</span>&nbsp;<span class=\"time\">09:00 – 17:00</span>",
-      "new_a_241": "<span class=\"day\">יום רביעי</span>&nbsp;<span class=\"time\">09:00 – 17:00</span>",
-      "new_a_244": "<span class=\"day\">יום חמישי</span>&nbsp;<span class=\"time\">09:00 – 17:00</span>",
-      "new_a_247": "<span class=\"day\">יום שישי</span>&nbsp;<span class=\"time closed\">סגור</span>",
-      "new_a_250": "<span class=\"day\">יום שבת</span>&nbsp;<span class=\"time closed\">סגור</span>",
-      "new_a_256": "<span class=\"day\" style=\"color: #3D2358\">יום ראשון</span>&nbsp;<span class=\"time\" style=\"color: #3D2358\">09:00 – 17:00</span>",
-      "new_a_259": "<span class=\"day\" style=\"color: #3D2358\">יום שני</span>&nbsp;<span class=\"time\" style=\"color: #3D2358\">09:00 – 17:00</span>",
-      "new_a_262": "<span class=\"day\" style=\"color: #3D2358\">יום שלישי</span>&nbsp;<span class=\"time\" style=\"color: #3D2358\">09:00 – 17:00</span>",
-      "new_a_265": "<span class=\"day\" style=\"color: #3D2358\">יום רביעי</span>&nbsp;<span class=\"time\" style=\"color: #3D2358\">09:00 – 17:00</span>",
-      "new_a_268": "<span class=\"day\" style=\"color: #3D2358\">יום חמישי</span>&nbsp;<span class=\"time\" style=\"color: #3D2358\">09:00 – 17:00</span>",
-      "new_a_271": "<span class=\"day\" style=\"color: #3D2358\">יום שישי</span>&nbsp;<span class=\"time closed\" style=\"color: #3D2358\">סגור</span>",
-      "new_a_274": "<span class=\"day\" style=\"color: #3D2358\">יום שבת</span>&nbsp;<span class=\"time closed\" style=\"color: #3D2358\">סגור</span>",
-      "new_a_278": "<span class=\"day\">יום ראשון</span>&nbsp;<span class=\"time\">09:00 – 17:00</span>",
-      "new_a_281": "<span class=\"day\">יום שני</span>&nbsp;<span class=\"time\">09:00 – 17:00</span>",
-      "new_a_284": "<span class=\"day\">יום שלישי</span>&nbsp;<span class=\"time\">09:00 – 17:00</span>",
-      "new_a_287": "<span class=\"day\">יום רביעי</span>&nbsp;<span class=\"time\">09:00 – 17:00</span>",
-      "new_a_290": "<span class=\"day\">יום חמישי</span>&nbsp;<span class=\"time\">09:00 – 17:00</span>",
-      "new_a_293": "<span class=\"day\">יום שישי</span>&nbsp;<span class=\"time closed\">סגור</span>",
-      "new_a_296": "<span class=\"day\">יום שבת</span>&nbsp;<span class=\"time closed\">סגור</span>",
+      "new_a_172": "התחל עכשיו",
+      "new_p_171": "הצטרפו לאלפי לקוחות מרוצים. התחילו את המסע שלכם היום.",
       "about_h1_1": "דיאנה אזולאי —\nמלווה נשים בנתיב הנשמה",
       "about_h2_2": "הנתיב שהוביל אותי אליכן",
       "about_h2_3": "מה אומרות הנשים שעברו את המסע",
@@ -2698,6 +3046,7 @@ html[dir="rtl"] body {
       "home_h3_13": "<span class=\"heading-accent\"></span>ניווט מהיר",
       "home_h3_14": "<span class=\"heading-accent\"></span>יצירת קשר",
       "home_h3_15": "<span class=\"heading-accent\"></span>שעות פעילות",
+      "new_h2_170": "מוכנים להתחיל?",
       "terms_h1_1": "תנאי שימוש",
       "terms_h2_2": "מה אומרות הנשים שעברו את המסע",
       "terms_h2_3": "1. הגדרות",
@@ -2984,7 +3333,7 @@ html[dir="rtl"] body {
       "contact_h3_16": "מהו אופי התהליך?",
       "contact_h3_17": "<span class=\"heading-accent\"></span>ניווט מהיר",
       "contact_h3_18": "<span class=\"heading-accent\"></span>יצירת קשר",
-      "contact_h3_19": "<span class=\"heading-accent\" style=\"color: #3D2358\"></span>שעות פעילות",
+      "contact_h3_19": "<span class=\"heading-accent\"></span>שעות פעילות",
       "home_quote_89": "הגעתי לדיאנה בתחושה שאני תקועה שנים. אחרי פגישה אחת של תקשור יהודי קבלי הבנתי מאיפה הפחד שלי מגיע ואיך לשחרר אותו. הרגשתי כאילו הסירו ממני משקל שנשאתי מבלי לדעת.",
       "home_quote_90": "חייתי שנים בספק עצמי, לא האמנתי בעצמי ולא ידעתי מה ייעודי. דיאנה עזרה לי לחזור לעצמי דרך מסרים משורש הנשמה. היום אני פועלת מתוך בהירות ואמונה עמוקה שלא הכרתי קודם.",
       "home_quote_91": "הזוגיות שלי הייתה בשפל. דיאנה הביאה אור על דפוסים שחזרו על עצמם שוב ושוב. האימון הנפשי הרוחני שלה נגע בשורש — לא רק בסימפטום. היום מערכת היחסים שלנו שונה לחלוטין.",
@@ -3075,7 +3424,7 @@ html[dir="rtl"] body {
       "terms_span_34": "0526899936",
       "contact_btn_81": "שליחת הפנייה",
       "contact_div_89": "<i class=\"fas fa-star\"></i>\n          <span>ליווי אישי ומקצועי</span>",
-      "contact_div_90": "<i class=\"fas fa-infinity\"></i>\n          <span style=\"color: #3D2358\">זמין לפגישות אונליין</span>",
+      "contact_div_90": "<i class=\"fas fa-infinity\"></i>\n          <span>זמין לפגישות אונליין</span>",
       "contact_nav_91": "בית",
       "contact_nav_92": "שירותים",
       "contact_nav_93": "אודות",
@@ -3161,7 +3510,7 @@ html[dir="rtl"] body {
       "contact_label_83": "כתובת אימייל",
       "contact_label_84": "טלפון",
       "contact_label_85": "ההודעה שלך",
-      "contact_quote_88": "\"הגעתי לדיאנה עם ראש עמוס, לב כבד ותחושה שאני לא מוצאת את עצמי. תוך פגישה אחת הרגשתי שמישהי מחזיקה אותי באמת – בלי שיפוטיות, עם כל כך הרבה חום ובהירות. היא עזרה לי לראות את עצמי מחדש, לשחרר דפוסים שנשאתי שנים, ולהבין לאן הנשמה שלי באמת רוצה ללכת. זה לא היה ייעוץ – זה היה מסע.\"",
+      "contact_quote_88": "“הגעתי לדיאנה עם ראש עמוס, לב כבד ותחושה שאני לא מוצאת את עצמי. תוך פגישה אחת הרגשתי שמישהי מחזיקה אותי באמת – בלי שיפוטיות, עם כל כך הרבה חום ובהירות. היא עזרה לי לראות את עצמי מחדש, לשחרר דפוסים שנשאתי שנים, ולהבין לאן הנשמה שלי באמת רוצה ללכת. זה לא היה ייעוץ – זה היה מסע.”",
       "legal_terms_h1_1": "תנאי שימוש",
       "legal_terms_h2_2": "1. הגדרות",
       "legal_terms_h2_3": "2. תיאור השירותים",
@@ -3865,41 +4214,8 @@ html[dir="rtl"] body {
       "home_p_35": "Guiding women through processes of clarity, direction and soul connection",
       "home_p_36": "Deep spiritual guidance through Kabbalistic wisdom — a journey into the soul, to discover the light within you and live a life of wholeness and true meaning.",
       "home_p_37": "© 2026 Diana Azulay Precise Path from the Soul. All rights reserved.",
-      "new_a_170": "<span class=\"day\">Sunday</span>&nbsp;<span class=\"time\">09:00 – 17:00</span>",
-      "new_a_173": "<span class=\"day\">Monday</span>&nbsp;<span class=\"time\">09:00 – 17:00</span>",
-      "new_a_176": "<span class=\"day\">Tuesday</span>&nbsp;<span class=\"time\">09:00 – 17:00</span>",
-      "new_a_179": "<span class=\"day\">Wednesday</span>&nbsp;<span class=\"time\">09:00 – 17:00</span>",
-      "new_a_182": "<span class=\"day\">Thursday</span>&nbsp;<span class=\"time\">09:00 – 17:00</span>",
-      "new_a_185": "<span class=\"day\">Friday</span>&nbsp;<span class=\"time closed\">Closed</span>",
-      "new_a_188": "<span class=\"day\">Saturday</span>&nbsp;<span class=\"time closed\">Closed</span>",
-      "new_a_201": "<span class=\"day\">Sunday</span>&nbsp;<span class=\"time\">09:00 – 17:00</span>",
-      "new_a_204": "<span class=\"day\">Monday</span>&nbsp;<span class=\"time\">09:00 – 17:00</span>",
-      "new_a_207": "<span class=\"day\">Tuesday</span>&nbsp;<span class=\"time\">09:00 – 17:00</span>",
-      "new_a_210": "<span class=\"day\">Wednesday</span>&nbsp;<span class=\"time\">09:00 – 17:00</span>",
-      "new_a_213": "<span class=\"day\">Thursday</span>&nbsp;<span class=\"time\">09:00 – 17:00</span>",
-      "new_a_216": "<span class=\"day\">Friday</span>&nbsp;<span class=\"time closed\">Closed</span>",
-      "new_a_219": "<span class=\"day\">Saturday</span>&nbsp;<span class=\"time closed\">Closed</span>",
-      "new_a_232": "<span class=\"day\">Sunday</span>&nbsp;<span class=\"time\">09:00 – 17:00</span>",
-      "new_a_235": "<span class=\"day\">Monday</span>&nbsp;<span class=\"time\">09:00 – 17:00</span>",
-      "new_a_238": "<span class=\"day\">Tuesday</span>&nbsp;<span class=\"time\">09:00 – 17:00</span>",
-      "new_a_241": "<span class=\"day\">Wednesday</span>&nbsp;<span class=\"time\">09:00 – 17:00</span>",
-      "new_a_244": "<span class=\"day\">Thursday</span>&nbsp;<span class=\"time\">09:00 – 17:00</span>",
-      "new_a_247": "<span class=\"day\">Friday</span>&nbsp;<span class=\"time closed\">Closed</span>",
-      "new_a_250": "<span class=\"day\">Saturday</span>&nbsp;<span class=\"time closed\">Closed</span>",
-      "new_a_256": "<span class=\"day\" style=\"color: #3D2358\">Sunday</span>&nbsp;<span class=\"time\" style=\"color: #3D2358\">09:00 – 17:00</span>",
-      "new_a_259": "<span class=\"day\" style=\"color: #3D2358\">Monday</span>&nbsp;<span class=\"time\" style=\"color: #3D2358\">09:00 – 17:00</span>",
-      "new_a_262": "<span class=\"day\" style=\"color: #3D2358\">Tuesday</span>&nbsp;<span class=\"time\" style=\"color: #3D2358\">09:00 – 17:00</span>",
-      "new_a_265": "<span class=\"day\" style=\"color: #3D2358\">Wednesday</span>&nbsp;<span class=\"time\" style=\"color: #3D2358\">09:00 – 17:00</span>",
-      "new_a_268": "<span class=\"day\" style=\"color: #3D2358\">Thursday</span>&nbsp;<span class=\"time\" style=\"color: #3D2358\">09:00 – 17:00</span>",
-      "new_a_271": "<span class=\"day\" style=\"color: #3D2358\">Friday</span>&nbsp;<span class=\"time closed\" style=\"color: #3D2358\">Closed</span>",
-      "new_a_274": "<span class=\"day\" style=\"color: #3D2358\">Saturday</span>&nbsp;<span class=\"time closed\" style=\"color: #3D2358\">Closed</span>",
-      "new_a_278": "<span class=\"day\">Sunday</span>&nbsp;<span class=\"time\">09:00 – 17:00</span>",
-      "new_a_281": "<span class=\"day\">Monday</span>&nbsp;<span class=\"time\">09:00 – 17:00</span>",
-      "new_a_284": "<span class=\"day\">Tuesday</span>&nbsp;<span class=\"time\">09:00 – 17:00</span>",
-      "new_a_287": "<span class=\"day\">Wednesday</span>&nbsp;<span class=\"time\">09:00 – 17:00</span>",
-      "new_a_290": "<span class=\"day\">Thursday</span>&nbsp;<span class=\"time\">09:00 – 17:00</span>",
-      "new_a_293": "<span class=\"day\">Friday</span>&nbsp;<span class=\"time closed\">Closed</span>",
-      "new_a_296": "<span class=\"day\">Saturday</span>&nbsp;<span class=\"time closed\">Closed</span>",
+      "new_a_172": "Start Now",
+      "new_p_171": "Join thousands of satisfied clients. Start your journey today.",
       "about_h1_1": "Diana Azulay —\nGuiding Women on the Soul's Path",
       "about_h2_2": "The Path That Led Me to You",
       "about_h2_3": "What Women Who Took the Journey Say",
@@ -3948,6 +4264,7 @@ html[dir="rtl"] body {
       "home_h3_13": "Quick Navigation",
       "home_h3_14": "Contact",
       "home_h3_15": "Operating Hours",
+      "new_h2_170": "Ready to Begin?",
       "terms_h1_1": "Terms of Use",
       "terms_h2_2": "What Women Who Went Through the Journey Say",
       "terms_h2_3": "1. Definitions",
@@ -4411,7 +4728,7 @@ html[dir="rtl"] body {
       "contact_label_83": "Email Address",
       "contact_label_84": "Phone",
       "contact_label_85": "Your Message",
-      "contact_quote_88": "\"I came to Diana with a cluttered mind, a heavy heart, and a feeling that I couldn't find myself. Within one session, I felt that someone was truly holding me – without judgment, with so much warmth and clarity. She helped me see myself anew, release patterns I had carried for years, and understand where my soul truly wants to go. It wasn't counseling – it was a journey.\"",
+      "contact_quote_88": "\"I came to Diana with a cluttered mind, heavy heart, and a feeling that I couldn't find myself. Within one session I felt that someone was truly holding me — without judgment, with so much warmth and clarity. She helped me see myself anew, release patterns I had carried for years, and understand where my soul truly wants to go. This wasn't counseling — this was a journey.\"",
       "legal_terms_h1_1": "Terms of Use",
       "legal_terms_h2_2": "1. Definitions",
       "legal_terms_h2_3": "2. Description of Services",

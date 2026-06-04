@@ -11572,13 +11572,12 @@ div[id*="mic-access-tool-box"] button[class*="reset"] * {
   margin-top: 8px;
 }
 
-/* Primary CTA Button - Gold Filled */
 .index-hero-section__btn--primary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #C4A55A 0%, #D4B86A 100%);
-  color: #2D1A3E;
+  background: linear-gradient(135deg, #3D1A5E 0%, #5A2080 100%);
+  color: #FFFFFF;
   padding: 14px 36px;
   border-radius: 8px;
   border: none;
@@ -11588,14 +11587,14 @@ div[id*="mic-access-tool-box"] button[class*="reset"] * {
   letter-spacing: 0.03em;
   text-decoration: none;
   cursor: pointer;
-  box-shadow: 0 0 40px rgba(196, 165, 90, 0.35);
+  box-shadow: 0 0 32px rgba(61,26,94,0.4);
   transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .index-hero-section__btn--primary:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 48px rgba(196, 165, 90, 0.5);
-  background: linear-gradient(135deg, #D4B86A 0%, #E8D09A 100%);
+  box-shadow: 0 8px 40px rgba(61,26,94,0.5);
+  background: linear-gradient(135deg, #5A2080 0%, #7B3FA0 100%);
 }
 
 /* Ghost CTA Button - Gold Outline */

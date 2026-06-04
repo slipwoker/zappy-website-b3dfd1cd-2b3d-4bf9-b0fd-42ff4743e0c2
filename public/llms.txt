@@ -44,7 +44,10 @@ Information about WCAG compliance and accessibility features.
 
 ## How to Contact Us
 
-- (No contact details configured yet.)
+- Email: dianazulay888@gmail.com
+- Phone: 0526899936
+- Phone (tel): tel:0526899936
+- Address: ספיר, חריש, ישראל
 
 ### Contact form
 - URL: https://example.com/contact

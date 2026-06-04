@@ -1915,15 +1915,15 @@ window.onload = function() {
                 '[tiktok_handle]',
                 '[pinterest_handle]',
                 // Old format (full URL placeholders)
-                '[social_facebook]',
-                '[social instagram]',
-                '[social_instagram]',
-                '[social whatsapp]',
-                '[social_whatsapp]',
+                'https://facebook.com/diana.azulay',
+                'https://instagram.com/dianazulay8888',
+                'https://instagram.com/dianazulay8888',
+                'https://wa.me/972526899936',
+                'https://wa.me/972526899936',
                 '[social_twitter]',
                 '[social_linkedin]',
                 '[social_youtube]',
-                '[social_tiktok]',
+                'https://tiktok.com/@diana.kabbalah.coach',
                 '[social_pinterest]'
             ];
             

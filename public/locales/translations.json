@@ -1,6 +1,7 @@
 {
   "he": {
     "translation": {
+      "nav-home": "בית",
       "blog_h1_1": "היומן הרוחני",
       "blog_h2_2": "כשהנשמה מדברת — איך ללמוד לסמוך על העיתוי האלוהי",
       "blog_h2_3": "מה אומרות הנשים שעברו את המסע",
@@ -964,6 +965,7 @@
   },
   "en": {
     "translation": {
+      "nav-home": "Home",
       "blog_h1_1": "The Spiritual Journal",
       "blog_h2_2": "When the Soul Speaks — How to Learn to Trust Divine Timing",
       "blog_h2_3": "What Women Who Went Through the Journey Say",

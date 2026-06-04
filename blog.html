@@ -230,14 +230,14 @@
   
   
   
-  <meta property="og:type" content="website">
-  <meta property="og:locale" content="he_IL">
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="he_IL" />
   
   
   
   
   
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
     .skip-link { position: absolute; top: 0; left: 0; transform: translateY(-200%); padding: 12px 18px; background: var(--bg-dark, #1a1a1a); color: var(--text-light, #fff); font-weight: 600; border-radius: 0 0 8px 0; z-index: 10000; }
     .skip-link:focus { transform: none; outline: 2px solid var(--ring, #fff); outline-offset: 2px; }
@@ -247,15 +247,15 @@
 
   
     <!-- Favicons -->
-    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
-    <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon-48x48.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon-192x192.png">
-    <link rel="icon" type="image/png" sizes="512x512" href="/assets/favicon-512x512.png">
-    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon-48x48.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon-192x192.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/assets/favicon-512x512.png" />
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
     <!-- Cookie Consent -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanilla-cookieconsent@3/dist/cookieconsent.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanilla-cookieconsent@3/dist/cookieconsent.css" />
     <script src="https://cdn.jsdelivr.net/npm/vanilla-cookieconsent@3/dist/cookieconsent.umd.js"></script>
     <!-- Mickidum Accessibility Toolbar -->
     <script src="https://cdn.jsdelivr.net/gh/mickidum/acc_toolbar/acctoolbar/acctoolbar.min.js"></script>
@@ -1527,6 +1527,67 @@ html[dir="rtl"] body {
               });
             })();
           </script>
+        <style>
+      /* Dropdown sub-menu styles */
+      .nav-menu li:has(.sub-menu),
+      nav li:has(.sub-menu),
+      .navbar li:has(.sub-menu) {
+        position: relative;
+      }
+      .nav-menu .sub-menu,
+      nav .sub-menu,
+      .navbar .sub-menu {
+        display: block;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        min-width: 200px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        padding: 8px 0;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: opacity 0.2s, visibility 0.2s, transform 0.2s;
+        z-index: 1000;
+        list-style: none;
+        pointer-events: none;
+      }
+      .nav-menu li:hover > .sub-menu,
+      nav li:hover > .sub-menu,
+      .navbar li:hover > .sub-menu {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+        pointer-events: auto;
+      }
+      .sub-menu li {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .sub-menu a {
+        display: block;
+        padding: 10px 16px;
+        color: #333;
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: 400;
+        white-space: nowrap;
+        transition: background-color 0.2s;
+      }
+      .sub-menu a:hover {
+        background-color: #f5f5f5;
+      }
+      /* RTL dropdown positioning */
+      [dir="rtl"] .sub-menu,
+      html[lang="he"] .sub-menu,
+      html[lang="ar"] .sub-menu {
+        left: auto;
+        right: 0;
+      }
+    </style>
     <link rel="stylesheet" href="/styles.css">
     <script>window.ZAPPY_WEBSITE_ID = "b3dfd1cd-2b3d-4bf9-b0fd-42ff4743e0c2"; window.ZAPPY_API_BASE = "https://api.zappy5.com";</script>
 
@@ -1571,23 +1632,23 @@ html[dir="rtl"] body {
 <a class="skip-link" href="#main" data-i18n="blog_link_68">דלג לתוכן הראשי</a>
   <nav class="navbar">
   <button class="mobile-toggle" id="mobileToggle" aria-label="Menu" data-i18n-aria-label="blog_aria_label_113">
-    <svg class="hamburger-icon" width="24" height="24" viewbox="0 0 24 24" fill="none">
-      <path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+    <svg class="hamburger-icon" width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
     </svg>
-    <svg class="close-icon" width="24" height="24" viewbox="0 0 24 24" fill="none" style="display: none;">
-      <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+    <svg class="close-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" style="display: none;">
+      <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
     </svg>
   </button>
 
   <button class="phone-header-btn" data-phone="0526899936" aria-label="Call" data-i18n-aria-label="blog_aria_label_114">
-    <svg width="20" height="20" viewbox="0 0 24 24" fill="currentColor">
-      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
     </svg>
   </button>
 
   <div class="nav-container">
     <div class="nav-right-group"><div class="nav-brand">
-      <a href="/" class="logo-link"><img class="logo" src="/assets/spiritual-coaching-kabbalah-logo-1780607993723-a06vdi.webp?v=1780607994054-w0jl7e" alt="דיאנה אזולאי דיוק הנתיב מתוך הנשמה" data-i18n-alt="blog_alt_110"></a>
+      <a href="/" class="logo-link"><img class="logo" src="/assets/spiritual-coaching-kabbalah-logo-1780607993723-a06vdi.webp?v=1780607994054-w0jl7e" alt="דיאנה אזולאי דיוק הנתיב מתוך הנשמה" data-i18n-alt="blog_alt_110" /></a>
     </div><ul class="nav-menu" id="navMenu"><li><a href="/" data-i18n="nav-home">בית</a></li><li><a href="/about" data-i18n="blog_nav_107">אודות</a></li><li><a href="/services" data-i18n="blog_nav_106">שירותים</a></li><li><a href="/blog" data-i18n="blog_nav_108">בלוג</a></li><li class="nav-cta-item-mobile"><a href="/contact">צור קשר</a></li></ul></div>
 
     
@@ -1595,10 +1656,10 @@ html[dir="rtl"] body {
     
 <div class="lang-switcher" data-no-icon-edit="true" data-icon-color="#3D2358" style="position:relative;display:inline-flex;align-items:center;z-index:1000;margin:0 4px;">
   <button class="lang-switcher-current" aria-haspopup="true" aria-expanded="false" data-no-icon-edit="true" style="display:flex;align-items:center;padding:8px;background:transparent;border:none;border-radius:6px;cursor:pointer;color:inherit;">
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="currentColor" style="flex-shrink:0;" data-no-icon-edit="true"><path d="M12.039,.002s0,0,0,0c-.013,0-.026-.002-.039-.002-.005,0-.009,0-.014,0-.002,0-.003,0-.005,0C5.373,.011,0,5.39,0,12s5.383,12,12,12,12-5.383,12-12S18.638,.023,12.039,.002Zm9.747,6.998h-4.814c-1.067-2.669-2.712-4.781-3.731-5.925,3.734,.421,6.901,2.719,8.546,5.925Zm-4.786,5c0,1.407-.292,2.753-.731,4H7.731c-.439-1.247-.731-2.593-.731-4s.292-2.754,.73-4h8.539c.439,1.247,.731,2.593,.731,4Zm-1.122,5c-1.229,2.838-3.116,4.99-3.878,5.788-.762-.798-2.649-2.95-3.878-5.788h7.755ZM8.121,7c1.229-2.841,3.117-4.992,3.879-5.789,.762,.798,2.649,2.95,3.878,5.789h-7.757ZM10.757,1.075c-1.025,1.15-2.668,3.264-3.73,5.925H2.214C3.859,3.795,7.024,1.498,10.757,1.075ZM1.764,8H6.668c-.403,1.247-.668,2.589-.668,4s.265,2.752,.669,4H1.764c-.487-1.242-.764-2.588-.764-4s.277-2.758,.764-4Zm.45,9H7.029c1.067,2.669,2.712,4.781,3.731,5.925-3.734-.421-6.901-2.719-8.546-5.925Zm11.026,5.925c1.019-1.144,2.664-3.257,3.731-5.925h4.814c-1.645,3.206-4.812,5.504-8.546,5.925Zm8.996-6.925h-4.905c.404-1.248,.669-2.589,.669-4s-.265-2.752-.669-4h4.905c.487,1.242,.764,2.588,.764,4s-.277,2.758-.764,4Z"></path></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0;" data-no-icon-edit="true"><path d="M12.039,.002s0,0,0,0c-.013,0-.026-.002-.039-.002-.005,0-.009,0-.014,0-.002,0-.003,0-.005,0C5.373,.011,0,5.39,0,12s5.383,12,12,12,12-5.383,12-12S18.638,.023,12.039,.002Zm9.747,6.998h-4.814c-1.067-2.669-2.712-4.781-3.731-5.925,3.734,.421,6.901,2.719,8.546,5.925Zm-4.786,5c0,1.407-.292,2.753-.731,4H7.731c-.439-1.247-.731-2.593-.731-4s.292-2.754,.73-4h8.539c.439,1.247,.731,2.593,.731,4Zm-1.122,5c-1.229,2.838-3.116,4.99-3.878,5.788-.762-.798-2.649-2.95-3.878-5.788h7.755ZM8.121,7c1.229-2.841,3.117-4.992,3.879-5.789,.762,.798,2.649,2.95,3.878,5.789h-7.757ZM10.757,1.075c-1.025,1.15-2.668,3.264-3.73,5.925H2.214C3.859,3.795,7.024,1.498,10.757,1.075ZM1.764,8H6.668c-.403,1.247-.668,2.589-.668,4s.265,2.752,.669,4H1.764c-.487-1.242-.764-2.588-.764-4s.277-2.758,.764-4Zm.45,9H7.029c1.067,2.669,2.712,4.781,3.731,5.925-3.734-.421-6.901-2.719-8.546-5.925Zm11.026,5.925c1.019-1.144,2.664-3.257,3.731-5.925h4.814c-1.645,3.206-4.812,5.504-8.546,5.925Zm8.996-6.925h-4.905c.404-1.248,.669-2.589,.669-4s-.265-2.752-.669-4h4.905c.487,1.242,.764,2.588,.764,4s-.277,2.758-.764,4Z"/></svg>
   </button>
   <div class="lang-switcher-dropdown" role="menu" style="position:absolute;top:100%;right:0;margin-top:4px;min-width:140px;background:white;border:1px solid rgba(128,128,128,0.2);border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);opacity:0;visibility:hidden;transform:translateY(-8px);transition:all 0.2s ease;z-index:1001;">
-    <button class="lang-option" data-lang="en" style="display:flex;align-items:center;gap:8px;width:100%;padding:10px 14px;background:none;border:none;text-align:left;cursor:pointer;font-size:14px;color:#333;"><img src="https://api.iconify.design/circle-flags/us.svg" width="20" height="20" alt="" style="display:inline-block;vertical-align:middle;border-radius:50%;"> English</button>
+    <button class="lang-option" data-lang="en" style="display:flex;align-items:center;gap:8px;width:100%;padding:10px 14px;background:none;border:none;text-align:left;cursor:pointer;font-size:14px;color:#333;"><img src="https://api.iconify.design/circle-flags/us.svg" width="20" height="20" alt style="display:inline-block;vertical-align:middle;border-radius:50%;" /> English</button>
   </div>
 </div>
 <script data-no-icon-edit="true">(function(){function f(){var b=document.querySelector('.lang-switcher-current');if(!b)return;var n=b.closest('nav')||b.closest('header')||b.closest('.navbar');if(!n)return;var a=n.querySelector('.nav-menu a,.nav-links a');if(!a)a=n.querySelector('a:not(.lang-option):not(.lang-switcher-current):not([class*="logo"])');if(a){var c=getComputedStyle(a).color;if(c&&c!=='rgb(0, 0, 0)'&&c!=='rgba(0, 0, 0, 0)'){b.style.color=c;return;}}var s=getComputedStyle(n).backgroundColor;if(s&&s!=='rgba(0, 0, 0, 0)'&&s!=='transparent'){var m=s.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/);if(m){var l=(0.299*parseInt(m[1])+0.587*parseInt(m[2])+0.114*parseInt(m[3]))/255;b.style.color=l>0.5?'#1a1a1a':'#F3FAFF';}}}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',f);}else{setTimeout(f,0);}})()</script><div class="nav-cta-container">
@@ -2053,28 +2114,28 @@ html[dir="rtl"] body {
 
   <!-- Decorative: radiant starburst top-left -->
   <div class="bjis-starburst" aria-hidden="true">
-    <svg data-no-icon-edit="true" aria-hidden="true" viewbox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" width="200" height="200">
+    <svg data-no-icon-edit="true" aria-hidden="true" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" width="200" height="200">
       <g opacity="0.13">
-        <circle cx="100" cy="100" r="6" fill="#D9A441"></circle>
-        <circle cx="100" cy="100" r="18" fill="none" stroke="#D9A441" stroke-width="1"></circle>
-        <circle cx="100" cy="100" r="34" fill="none" stroke="#D9A441" stroke-width="0.8"></circle>
-        <circle cx="100" cy="100" r="54" fill="none" stroke="#D9A441" stroke-width="0.6"></circle>
-        <circle cx="100" cy="100" r="78" fill="none" stroke="#D9A441" stroke-width="0.4"></circle>
-        <line x1="100" y1="22" x2="100" y2="178" stroke="#D9A441" stroke-width="0.5"></line>
-        <line x1="22" y1="100" x2="178" y2="100" stroke="#D9A441" stroke-width="0.5"></line>
-        <line x1="43" y1="43" x2="157" y2="157" stroke="#D9A441" stroke-width="0.4"></line>
-        <line x1="157" y1="43" x2="43" y2="157" stroke="#D9A441" stroke-width="0.4"></line>
-        <line x1="100" y1="22" x2="130" y2="70" stroke="#D9A441" stroke-width="0.3"></line>
-        <line x1="100" y1="22" x2="70" y2="70" stroke="#D9A441" stroke-width="0.3"></line>
+        <circle cx="100" cy="100" r="6" fill="#D9A441"/>
+        <circle cx="100" cy="100" r="18" fill="none" stroke="#D9A441" stroke-width="1"/>
+        <circle cx="100" cy="100" r="34" fill="none" stroke="#D9A441" stroke-width="0.8"/>
+        <circle cx="100" cy="100" r="54" fill="none" stroke="#D9A441" stroke-width="0.6"/>
+        <circle cx="100" cy="100" r="78" fill="none" stroke="#D9A441" stroke-width="0.4"/>
+        <line x1="100" y1="22" x2="100" y2="178" stroke="#D9A441" stroke-width="0.5"/>
+        <line x1="22" y1="100" x2="178" y2="100" stroke="#D9A441" stroke-width="0.5"/>
+        <line x1="43" y1="43" x2="157" y2="157" stroke="#D9A441" stroke-width="0.4"/>
+        <line x1="157" y1="43" x2="43" y2="157" stroke="#D9A441" stroke-width="0.4"/>
+        <line x1="100" y1="22" x2="130" y2="70" stroke="#D9A441" stroke-width="0.3"/>
+        <line x1="100" y1="22" x2="70" y2="70" stroke="#D9A441" stroke-width="0.3"/>
       </g>
     </svg>
   </div>
 
   <!-- Decorative: six-pointed star separator -->
   <div class="bjis-star-accent" aria-hidden="true">
-    <svg data-no-icon-edit="true" aria-hidden="true" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="22" height="22">
-      <polygon points="12,2 14.5,8.5 21,8.5 15.5,12.5 17.5,19 12,15 6.5,19 8.5,12.5 3,8.5 9.5,8.5" fill="none" stroke="#D9A441" stroke-width="1.2" stroke-linejoin="round"></polygon>
-      <polygon points="12,6 13.5,10 17.5,10 14.5,12.5 15.5,16 12,13.5 8.5,16 9.5,12.5 6.5,10 10.5,10" fill="#D9A441" opacity="0.5"></polygon>
+    <svg data-no-icon-edit="true" aria-hidden="true" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="22" height="22">
+      <polygon points="12,2 14.5,8.5 21,8.5 15.5,12.5 17.5,19 12,15 6.5,19 8.5,12.5 3,8.5 9.5,8.5" fill="none" stroke="#D9A441" stroke-width="1.2" stroke-linejoin="round"/>
+      <polygon points="12,6 13.5,10 17.5,10 14.5,12.5 15.5,16 12,13.5 8.5,16 9.5,12.5 6.5,10 10.5,10" fill="#D9A441" opacity="0.5"/>
     </svg>
   </div>
 
@@ -2094,8 +2155,8 @@ html[dir="rtl"] body {
     <!-- Gold accent divider -->
     <div class="bjis-gold-divider" aria-hidden="true">
       <span class="bjis-gold-line"></span>
-      <svg data-no-icon-edit="true" aria-hidden="true" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" width="16" height="16">
-        <polygon points="10,1 12,7 18,7 13,11 15,17 10,13 5,17 7,11 2,7 8,7" fill="#D9A441" opacity="0.85"></polygon>
+      <svg data-no-icon-edit="true" aria-hidden="true" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+        <polygon points="10,1 12,7 18,7 13,11 15,17 10,13 5,17 7,11 2,7 8,7" fill="#D9A441" opacity="0.85"/>
       </svg>
       <span class="bjis-gold-line"></span>
     </div>
@@ -2112,8 +2173,8 @@ html[dir="rtl"] body {
 
   <!-- Bottom paper-edge divider -->
   <div class="bjis-divider-wrapper">
-    <svg data-no-icon-edit="true" aria-hidden="true" viewbox="0 0 1440 64" preserveaspectratio="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M0,64 L0,28 Q60,18 120,26 T240,22 Q300,28 360,20 T480,24 Q540,20 600,26 T720,22 Q780,18 840,24 T960,20 Q1020,26 1080,20 T1200,24 Q1260,20 1320,26 T1440,22 L1440,64 Z" fill="#F5EEF8"></path>
+    <svg data-no-icon-edit="true" aria-hidden="true" viewBox="0 0 1440 64" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,64 L0,28 Q60,18 120,26 T240,22 Q300,28 360,20 T480,24 Q540,20 600,26 T720,22 Q780,18 840,24 T960,20 Q1020,26 1080,20 T1200,24 Q1260,20 1320,26 T1440,22 L1440,64 Z" fill="#F5EEF8"/>
     </svg>
   </div>
 </section>
@@ -2121,14 +2182,14 @@ html[dir="rtl"] body {
 <section class="blog-featured-article-section" data-layout-spec="בלוג-featured-article" dir="rtl">
   <!-- Decorative starburst -->
   <div class="bfa-starburst" aria-hidden="true">
-    <svg data-no-icon-edit="true" aria-hidden="true" width="320" height="320" viewbox="0 0 320 320" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="160" cy="160" r="120" stroke="#C4A55A" stroke-width="0.5" opacity="0.18"></circle>
-      <circle cx="160" cy="160" r="80" stroke="#C4A55A" stroke-width="0.5" opacity="0.14"></circle>
-      <circle cx="160" cy="160" r="40" stroke="#C4A55A" stroke-width="0.5" opacity="0.1"></circle>
-      <line x1="160" y1="20" x2="160" y2="300" stroke="#C4A55A" stroke-width="0.5" opacity="0.12"></line>
-      <line x1="20" y1="160" x2="300" y2="160" stroke="#C4A55A" stroke-width="0.5" opacity="0.12"></line>
-      <line x1="56" y1="56" x2="264" y2="264" stroke="#C4A55A" stroke-width="0.5" opacity="0.1"></line>
-      <line x1="264" y1="56" x2="56" y2="264" stroke="#C4A55A" stroke-width="0.5" opacity="0.1"></line>
+    <svg data-no-icon-edit="true" aria-hidden="true" width="320" height="320" viewBox="0 0 320 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="160" cy="160" r="120" stroke="#C4A55A" stroke-width="0.5" opacity="0.18"/>
+      <circle cx="160" cy="160" r="80" stroke="#C4A55A" stroke-width="0.5" opacity="0.14"/>
+      <circle cx="160" cy="160" r="40" stroke="#C4A55A" stroke-width="0.5" opacity="0.1"/>
+      <line x1="160" y1="20" x2="160" y2="300" stroke="#C4A55A" stroke-width="0.5" opacity="0.12"/>
+      <line x1="20" y1="160" x2="300" y2="160" stroke="#C4A55A" stroke-width="0.5" opacity="0.12"/>
+      <line x1="56" y1="56" x2="264" y2="264" stroke="#C4A55A" stroke-width="0.5" opacity="0.1"/>
+      <line x1="264" y1="56" x2="56" y2="264" stroke="#C4A55A" stroke-width="0.5" opacity="0.1"/>
     </svg>
   </div>
 
@@ -2136,14 +2197,14 @@ html[dir="rtl"] body {
     <!-- Section label -->
     <div class="bfa-label-row">
       <span class="bfa-star-ornament" aria-hidden="true">
-        <svg data-no-icon-edit="true" aria-hidden="true" width="20" height="20" viewbox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M10 0L11.76 7.24L19 10L11.76 12.76L10 20L8.24 12.76L1 10L8.24 7.24L10 0Z" fill="#C4A55A" opacity="0.9"></path>
+        <svg data-no-icon-edit="true" aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M10 0L11.76 7.24L19 10L11.76 12.76L10 20L8.24 12.76L1 10L8.24 7.24L10 0Z" fill="#C4A55A" opacity="0.9"/>
         </svg>
       </span>
       <span class="bfa-section-label" data-i18n="blog_span_45">מאמר מומלץ</span>
       <span class="bfa-star-ornament" aria-hidden="true">
-        <svg data-no-icon-edit="true" aria-hidden="true" width="20" height="20" viewbox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M10 0L11.76 7.24L19 10L11.76 12.76L10 20L8.24 12.76L1 10L8.24 7.24L10 0Z" fill="#C4A55A" opacity="0.9"></path>
+        <svg data-no-icon-edit="true" aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M10 0L11.76 7.24L19 10L11.76 12.76L10 20L8.24 12.76L1 10L8.24 7.24L10 0Z" fill="#C4A55A" opacity="0.9"/>
         </svg>
       </span>
     </div>
@@ -2152,7 +2213,7 @@ html[dir="rtl"] body {
     <article class="bfa-card">
       <!-- Image Area -->
       <div class="bfa-image-wrapper">
-        <img loading="eager" fetchpriority="high" data-placeholder="blog-featured-article-image-1" data-context="A serene and luminous editorial photograph for a Jewish Kabbalistic spiritual coaching blog. A woman sits in soft golden-purple light, hands resting open on her lap in a meditative pose, surrounded by delicate floating light particles and subtle sacred geometry patterns. The mood is calm, feminine, and deeply spiritual. Soft bokeh background in lavender and warm gold tones. The image evokes emotional release, divine timing, and soul alignment. Premium, magazine-quality photography." width="720" height="480" src="/assets/site-blog-featured-article-image-1.webp" alt="אישה במדיטציה עמוקה בתוך אור זהוב ולבנדר, מסמלת שחרור רגשי וחיבור לנשמה" data-i18n-alt="blog_alt_111">
+        <img loading="eager" fetchpriority="high" data-placeholder="blog-featured-article-image-1" data-context="A serene and luminous editorial photograph for a Jewish Kabbalistic spiritual coaching blog. A woman sits in soft golden-purple light, hands resting open on her lap in a meditative pose, surrounded by delicate floating light particles and subtle sacred geometry patterns. The mood is calm, feminine, and deeply spiritual. Soft bokeh background in lavender and warm gold tones. The image evokes emotional release, divine timing, and soul alignment. Premium, magazine-quality photography." width="720" height="480" src="/assets/site-blog-featured-article-image-1.webp" alt="אישה במדיטציה עמוקה בתוך אור זהוב ולבנדר, מסמלת שחרור רגשי וחיבור לנשמה" data-i18n-alt="blog_alt_111" />
         <!-- Category badge -->
         <div class="bfa-category-badge" data-i18n="blog_div_100">חיבור לנשמה</div>
         <!-- Luminous border overlay -->
@@ -2198,8 +2259,8 @@ html[dir="rtl"] body {
 
   <!-- Bottom divider: curved gradient band into article categories grid -->
   <div class="bfa-divider-wrapper">
-    <svg data-no-icon-edit="true" aria-hidden="true" viewbox="0 0 1200 90" preserveaspectratio="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M0,90 L0,45 Q150,10 300,38 T600,28 Q750,18 900,42 T1200,32 L1200,90 Z" fill="#F8EEF7"></path>
+    <svg data-no-icon-edit="true" aria-hidden="true" viewBox="0 0 1200 90" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,90 L0,45 Q150,10 300,38 T600,28 Q750,18 900,42 T1200,32 L1200,90 Z" fill="#F8EEF7"/>
     </svg>
   </div>
 </section>
@@ -2207,14 +2268,14 @@ html[dir="rtl"] body {
 <section class="blog-article-grid-section" data-layout-spec="בלוג-article-grid" dir="rtl">
   <!-- Decorative starburst -->
   <div class="bag-deco-starburst" aria-hidden="true">
-    <svg data-no-icon-edit="true" aria-hidden="true" width="280" height="280" viewbox="0 0 280 280" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="140" cy="140" r="120" stroke="#C4A55A" stroke-width="0.5" opacity="0.18"></circle>
-      <circle cx="140" cy="140" r="90" stroke="#C4A55A" stroke-width="0.5" opacity="0.14"></circle>
-      <circle cx="140" cy="140" r="60" stroke="#C4A55A" stroke-width="0.5" opacity="0.10"></circle>
-      <line x1="140" y1="20" x2="140" y2="260" stroke="#C4A55A" stroke-width="0.5" opacity="0.12"></line>
-      <line x1="20" y1="140" x2="260" y2="140" stroke="#C4A55A" stroke-width="0.5" opacity="0.12"></line>
-      <line x1="55" y1="55" x2="225" y2="225" stroke="#C4A55A" stroke-width="0.5" opacity="0.10"></line>
-      <line x1="225" y1="55" x2="55" y2="225" stroke="#C4A55A" stroke-width="0.5" opacity="0.10"></line>
+    <svg data-no-icon-edit="true" aria-hidden="true" width="280" height="280" viewBox="0 0 280 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="140" cy="140" r="120" stroke="#C4A55A" stroke-width="0.5" opacity="0.18"/>
+      <circle cx="140" cy="140" r="90" stroke="#C4A55A" stroke-width="0.5" opacity="0.14"/>
+      <circle cx="140" cy="140" r="60" stroke="#C4A55A" stroke-width="0.5" opacity="0.10"/>
+      <line x1="140" y1="20" x2="140" y2="260" stroke="#C4A55A" stroke-width="0.5" opacity="0.12"/>
+      <line x1="20" y1="140" x2="260" y2="140" stroke="#C4A55A" stroke-width="0.5" opacity="0.12"/>
+      <line x1="55" y1="55" x2="225" y2="225" stroke="#C4A55A" stroke-width="0.5" opacity="0.10"/>
+      <line x1="225" y1="55" x2="55" y2="225" stroke="#C4A55A" stroke-width="0.5" opacity="0.10"/>
     </svg>
   </div>
 
@@ -2302,14 +2363,14 @@ html[dir="rtl"] body {
 
   <!-- Bottom lavender glow divider -->
   <div class="bag-divider-wrapper">
-    <svg data-no-icon-edit="true" aria-hidden="true" viewbox="0 0 1200 80" preserveaspectratio="none" xmlns="http://www.w3.org/2000/svg">
+    <svg data-no-icon-edit="true" aria-hidden="true" viewBox="0 0 1200 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <lineargradient id="bag-glow-grad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#F5EEF8" stop-opacity="0"></stop>
-          <stop offset="100%" stop-color="#EDE0F5" stop-opacity="1"></stop>
-        </lineargradient>
+        <linearGradient id="bag-glow-grad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#F5EEF8" stop-opacity="0"/>
+          <stop offset="100%" stop-color="#EDE0F5" stop-opacity="1"/>
+        </linearGradient>
       </defs>
-      <path d="M0,80 L0,30 Q150,10 300,28 T600,18 Q750,8 900,24 T1200,20 L1200,80 Z" fill="#F5EEF8"></path>
+      <path d="M0,80 L0,30 Q150,10 300,28 T600,18 Q750,8 900,24 T1200,20 L1200,80 Z" fill="#F5EEF8"/>
     </svg>
   </div>
 
@@ -2318,30 +2379,30 @@ html[dir="rtl"] body {
 <section class="blog-topic-map-section" data-layout-spec="בלוג-topic-map" dir="rtl">
   <!-- Sacred geometry SVG background -->
   <div class="btm-geo-bg" aria-hidden="true">
-    <svg data-no-icon-edit="true" aria-hidden="true" viewbox="0 0 1200 700" preserveaspectratio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <svg data-no-icon-edit="true" aria-hidden="true" viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
       <!-- Outer circle -->
-      <circle cx="600" cy="350" r="280" fill="none" stroke="rgba(140,82,204,0.12)" stroke-width="1"></circle>
-      <circle cx="600" cy="350" r="200" fill="none" stroke="rgba(140,82,204,0.09)" stroke-width="1"></circle>
-      <circle cx="600" cy="350" r="120" fill="none" stroke="rgba(217,164,65,0.1)" stroke-width="1"></circle>
+      <circle cx="600" cy="350" r="280" fill="none" stroke="rgba(140,82,204,0.12)" stroke-width="1"/>
+      <circle cx="600" cy="350" r="200" fill="none" stroke="rgba(140,82,204,0.09)" stroke-width="1"/>
+      <circle cx="600" cy="350" r="120" fill="none" stroke="rgba(217,164,65,0.1)" stroke-width="1"/>
       <!-- Hexagram lines -->
-      <line x1="600" y1="70" x2="600" y2="630" stroke="rgba(140,82,204,0.07)" stroke-width="1"></line>
-      <line x1="357" y1="210" x2="843" y2="490" stroke="rgba(140,82,204,0.07)" stroke-width="1"></line>
-      <line x1="843" y1="210" x2="357" y2="490" stroke="rgba(140,82,204,0.07)" stroke-width="1"></line>
+      <line x1="600" y1="70" x2="600" y2="630" stroke="rgba(140,82,204,0.07)" stroke-width="1"/>
+      <line x1="357" y1="210" x2="843" y2="490" stroke="rgba(140,82,204,0.07)" stroke-width="1"/>
+      <line x1="843" y1="210" x2="357" y2="490" stroke="rgba(140,82,204,0.07)" stroke-width="1"/>
       <!-- Connection lines to panels -->
-      <line x1="600" y1="350" x2="120" y2="160" stroke="rgba(217,164,65,0.15)" stroke-width="1" stroke-dasharray="4 6"></line>
-      <line x1="600" y1="350" x2="600" y2="90" stroke="rgba(217,164,65,0.15)" stroke-width="1" stroke-dasharray="4 6"></line>
-      <line x1="600" y1="350" x2="1080" y2="160" stroke="rgba(217,164,65,0.15)" stroke-width="1" stroke-dasharray="4 6"></line>
-      <line x1="600" y1="350" x2="120" y2="540" stroke="rgba(217,164,65,0.15)" stroke-width="1" stroke-dasharray="4 6"></line>
-      <line x1="600" y1="350" x2="600" y2="610" stroke="rgba(217,164,65,0.15)" stroke-width="1" stroke-dasharray="4 6"></line>
-      <line x1="600" y1="350" x2="1080" y2="540" stroke="rgba(217,164,65,0.15)" stroke-width="1" stroke-dasharray="4 6"></line>
+      <line x1="600" y1="350" x2="120" y2="160" stroke="rgba(217,164,65,0.15)" stroke-width="1" stroke-dasharray="4 6"/>
+      <line x1="600" y1="350" x2="600" y2="90" stroke="rgba(217,164,65,0.15)" stroke-width="1" stroke-dasharray="4 6"/>
+      <line x1="600" y1="350" x2="1080" y2="160" stroke="rgba(217,164,65,0.15)" stroke-width="1" stroke-dasharray="4 6"/>
+      <line x1="600" y1="350" x2="120" y2="540" stroke="rgba(217,164,65,0.15)" stroke-width="1" stroke-dasharray="4 6"/>
+      <line x1="600" y1="350" x2="600" y2="610" stroke="rgba(217,164,65,0.15)" stroke-width="1" stroke-dasharray="4 6"/>
+      <line x1="600" y1="350" x2="1080" y2="540" stroke="rgba(217,164,65,0.15)" stroke-width="1" stroke-dasharray="4 6"/>
       <!-- Decorative dots at nodes -->
-      <circle cx="600" cy="350" r="6" fill="rgba(217,164,65,0.25)"></circle>
-      <circle cx="120" cy="160" r="4" fill="rgba(217,164,65,0.2)"></circle>
-      <circle cx="600" cy="90" r="4" fill="rgba(217,164,65,0.2)"></circle>
-      <circle cx="1080" cy="160" r="4" fill="rgba(217,164,65,0.2)"></circle>
-      <circle cx="120" cy="540" r="4" fill="rgba(217,164,65,0.2)"></circle>
-      <circle cx="600" cy="610" r="4" fill="rgba(217,164,65,0.2)"></circle>
-      <circle cx="1080" cy="540" r="4" fill="rgba(217,164,65,0.2)"></circle>
+      <circle cx="600" cy="350" r="6" fill="rgba(217,164,65,0.25)"/>
+      <circle cx="120" cy="160" r="4" fill="rgba(217,164,65,0.2)"/>
+      <circle cx="600" cy="90" r="4" fill="rgba(217,164,65,0.2)"/>
+      <circle cx="1080" cy="160" r="4" fill="rgba(217,164,65,0.2)"/>
+      <circle cx="120" cy="540" r="4" fill="rgba(217,164,65,0.2)"/>
+      <circle cx="600" cy="610" r="4" fill="rgba(217,164,65,0.2)"/>
+      <circle cx="1080" cy="540" r="4" fill="rgba(217,164,65,0.2)"/>
     </svg>
   </div>
 
@@ -2349,8 +2410,8 @@ html[dir="rtl"] body {
     <!-- Section header -->
     <header class="btm-header">
       <div class="btm-star-accent" aria-hidden="true">
-        <svg data-no-icon-edit="true" aria-hidden="true" width="24" height="24" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <polygon points="12,2 14.4,9.6 22,9.6 15.8,14.4 18.2,22 12,17.2 5.8,22 8.2,14.4 2,9.6 9.6,9.6" fill="rgba(217,164,65,0.9)"></polygon>
+        <svg data-no-icon-edit="true" aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="12,2 14.4,9.6 22,9.6 15.8,14.4 18.2,22 12,17.2 5.8,22 8.2,14.4 2,9.6 9.6,9.6" fill="rgba(217,164,65,0.9)"/>
         </svg>
       </div>
       <h2 class="btm-title" data-i18n="blog_h2_4">עולמות הידע של הבלוג</h2>
@@ -2363,10 +2424,10 @@ html[dir="rtl"] body {
       <!-- Panel 1: ריפוי רגשי -->
       <article class="btm-panel btm-panel--top-right">
         <div class="btm-panel-icon" aria-hidden="true">
-          <svg data-element-type="icon" data-icon-type="svg" width="36" height="36" viewbox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M18 6C18 6 8 12 8 20C8 25.5 12.5 30 18 30C23.5 30 28 25.5 28 20C28 12 18 6 18 6Z" stroke="currentColor" stroke-width="1.5" fill="none"></path>
-            <path d="M18 14C18 14 13 17 13 21C13 23.8 15.2 26 18 26C20.8 26 23 23.8 23 21C23 17 18 14 18 14Z" fill="rgba(140,82,204,0.2)" stroke="currentColor" stroke-width="1.2"></path>
-            <line x1="18" y1="26" x2="18" y2="30" stroke="currentColor" stroke-width="1.5"></line>
+          <svg data-element-type="icon" data-icon-type="svg" width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 6C18 6 8 12 8 20C8 25.5 12.5 30 18 30C23.5 30 28 25.5 28 20C28 12 18 6 18 6Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+            <path d="M18 14C18 14 13 17 13 21C13 23.8 15.2 26 18 26C20.8 26 23 23.8 23 21C23 17 18 14 18 14Z" fill="rgba(140,82,204,0.2)" stroke="currentColor" stroke-width="1.2"/>
+            <line x1="18" y1="26" x2="18" y2="30" stroke="currentColor" stroke-width="1.5"/>
           </svg>
         </div>
         <div class="btm-panel-content">
@@ -2379,10 +2440,10 @@ html[dir="rtl"] body {
       <!-- Panel 2: זוגיות ומערכות יחסים -->
       <article class="btm-panel btm-panel--top-center">
         <div class="btm-panel-icon" aria-hidden="true">
-          <svg data-element-type="icon" data-icon-type="svg" width="36" height="36" viewbox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 8C9.8 8 8 9.8 8 12C8 16 12 20 18 24C24 20 28 16 28 12C28 9.8 26.2 8 24 8C22.5 8 21.2 8.8 20.3 10C19.5 11 18.8 12 18 12C17.2 12 16.5 11 15.7 10C14.8 8.8 13.5 8 12 8Z" stroke="currentColor" stroke-width="1.5" fill="rgba(243,155,203,0.2)"></path>
-            <line x1="18" y1="26" x2="18" y2="30" stroke="currentColor" stroke-width="1.5"></line>
-            <line x1="14" y1="30" x2="22" y2="30" stroke="currentColor" stroke-width="1.5"></line>
+          <svg data-element-type="icon" data-icon-type="svg" width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 8C9.8 8 8 9.8 8 12C8 16 12 20 18 24C24 20 28 16 28 12C28 9.8 26.2 8 24 8C22.5 8 21.2 8.8 20.3 10C19.5 11 18.8 12 18 12C17.2 12 16.5 11 15.7 10C14.8 8.8 13.5 8 12 8Z" stroke="currentColor" stroke-width="1.5" fill="rgba(243,155,203,0.2)"/>
+            <line x1="18" y1="26" x2="18" y2="30" stroke="currentColor" stroke-width="1.5"/>
+            <line x1="14" y1="30" x2="22" y2="30" stroke="currentColor" stroke-width="1.5"/>
           </svg>
         </div>
         <div class="btm-panel-content">
@@ -2395,11 +2456,11 @@ html[dir="rtl"] body {
       <!-- Panel 3: פירוש חלומות -->
       <article class="btm-panel btm-panel--top-left">
         <div class="btm-panel-icon" aria-hidden="true">
-          <svg data-element-type="icon" data-icon-type="svg" width="36" height="36" viewbox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M18 6C13.6 6 10 9.6 10 14C10 17.4 12 20.4 15 21.8V26H21V21.8C24 20.4 26 17.4 26 14C26 9.6 22.4 6 18 6Z" stroke="currentColor" stroke-width="1.5" fill="rgba(140,82,204,0.15)"></path>
-            <line x1="15" y1="26" x2="21" y2="26" stroke="currentColor" stroke-width="1.5"></line>
-            <line x1="15" y1="28.5" x2="21" y2="28.5" stroke="currentColor" stroke-width="1.5"></line>
-            <circle cx="18" cy="14" r="3" fill="rgba(217,164,65,0.4)"></circle>
+          <svg data-element-type="icon" data-icon-type="svg" width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 6C13.6 6 10 9.6 10 14C10 17.4 12 20.4 15 21.8V26H21V21.8C24 20.4 26 17.4 26 14C26 9.6 22.4 6 18 6Z" stroke="currentColor" stroke-width="1.5" fill="rgba(140,82,204,0.15)"/>
+            <line x1="15" y1="26" x2="21" y2="26" stroke="currentColor" stroke-width="1.5"/>
+            <line x1="15" y1="28.5" x2="21" y2="28.5" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="18" cy="14" r="3" fill="rgba(217,164,65,0.4)"/>
           </svg>
         </div>
         <div class="btm-panel-content">
@@ -2413,20 +2474,20 @@ html[dir="rtl"] body {
       <div class="btm-center-hub">
         <div class="btm-hub-inner">
           <div class="btm-hub-star" aria-hidden="true">
-            <svg data-no-icon-edit="true" aria-hidden="true" width="48" height="48" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-              <polygon points="24,4 28.8,19.2 44,19.2 31.6,28.8 36.4,44 24,34.4 11.6,44 16.4,28.8 4,19.2 19.2,19.2" fill="rgba(217,164,65,0.85)"></polygon>
+            <svg data-no-icon-edit="true" aria-hidden="true" width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+              <polygon points="24,4 28.8,19.2 44,19.2 31.6,28.8 36.4,44 24,34.4 11.6,44 16.4,28.8 4,19.2 19.2,19.2" fill="rgba(217,164,65,0.85)"/>
             </svg>
           </div>
-          <span class="btm-hub-label" data-i18n="blog_span_55">עולמות<br><br>הידע</span>
+          <span class="btm-hub-label" data-i18n="blog_span_55">עולמות<br /><br /><br /><br />הידע</span>
         </div>
       </div>
 
       <!-- Panel 4: ביטחון עצמי -->
       <article class="btm-panel btm-panel--bottom-right">
         <div class="btm-panel-icon" aria-hidden="true">
-          <svg data-element-type="icon" data-icon-type="svg" width="36" height="36" viewbox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M18 6L22 14H30L24 19L26 28L18 23L10 28L12 19L6 14H14L18 6Z" stroke="currentColor" stroke-width="1.5" fill="rgba(217,164,65,0.2)"></path>
-            <circle cx="18" cy="18" r="4" fill="rgba(217,164,65,0.35)"></circle>
+          <svg data-element-type="icon" data-icon-type="svg" width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 6L22 14H30L24 19L26 28L18 23L10 28L12 19L6 14H14L18 6Z" stroke="currentColor" stroke-width="1.5" fill="rgba(217,164,65,0.2)"/>
+            <circle cx="18" cy="18" r="4" fill="rgba(217,164,65,0.35)"/>
           </svg>
         </div>
         <div class="btm-panel-content">
@@ -2439,10 +2500,10 @@ html[dir="rtl"] body {
       <!-- Panel 5: אמונה ובטחון -->
       <article class="btm-panel btm-panel--bottom-center">
         <div class="btm-panel-icon" aria-hidden="true">
-          <svg data-element-type="icon" data-icon-type="svg" width="36" height="36" viewbox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg data-element-type="icon" data-icon-type="svg" width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
             <!-- Star of David -->
-            <polygon points="18,6 22,14 30,14 24,20 26,28 18,24 10,28 12,20 6,14 14,14" fill="none" stroke="currentColor" stroke-width="1.2"></polygon>
-            <polygon points="18,10 21,16 27,16 22,20 24,26 18,22 12,26 14,20 9,16 15,16" fill="rgba(140,82,204,0.15)" stroke="none"></polygon>
+            <polygon points="18,6 22,14 30,14 24,20 26,28 18,24 10,28 12,20 6,14 14,14" fill="none" stroke="currentColor" stroke-width="1.2"/>
+            <polygon points="18,10 21,16 27,16 22,20 24,26 18,22 12,26 14,20 9,16 15,16" fill="rgba(140,82,204,0.15)" stroke="none"/>
           </svg>
         </div>
         <div class="btm-panel-content">
@@ -2455,14 +2516,14 @@ html[dir="rtl"] body {
       <!-- Panel 6: נתיב הנשמה -->
       <article class="btm-panel btm-panel--bottom-left">
         <div class="btm-panel-icon" aria-hidden="true">
-          <svg data-element-type="icon" data-icon-type="svg" width="36" height="36" viewbox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="18" cy="18" r="12" stroke="currentColor" stroke-width="1.5" fill="none"></circle>
-            <circle cx="18" cy="18" r="7" stroke="currentColor" stroke-width="1.2" fill="rgba(140,82,204,0.12)"></circle>
-            <circle cx="18" cy="18" r="3" fill="rgba(217,164,65,0.6)"></circle>
-            <line x1="18" y1="6" x2="18" y2="10" stroke="currentColor" stroke-width="1.5"></line>
-            <line x1="18" y1="26" x2="18" y2="30" stroke="currentColor" stroke-width="1.5"></line>
-            <line x1="6" y1="18" x2="10" y2="18" stroke="currentColor" stroke-width="1.5"></line>
-            <line x1="26" y1="18" x2="30" y2="18" stroke="currentColor" stroke-width="1.5"></line>
+          <svg data-element-type="icon" data-icon-type="svg" width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="18" cy="18" r="12" stroke="currentColor" stroke-width="1.5" fill="none"/>
+            <circle cx="18" cy="18" r="7" stroke="currentColor" stroke-width="1.2" fill="rgba(140,82,204,0.12)"/>
+            <circle cx="18" cy="18" r="3" fill="rgba(217,164,65,0.6)"/>
+            <line x1="18" y1="6" x2="18" y2="10" stroke="currentColor" stroke-width="1.5"/>
+            <line x1="18" y1="26" x2="18" y2="30" stroke="currentColor" stroke-width="1.5"/>
+            <line x1="6" y1="18" x2="10" y2="18" stroke="currentColor" stroke-width="1.5"/>
+            <line x1="26" y1="18" x2="30" y2="18" stroke="currentColor" stroke-width="1.5"/>
           </svg>
         </div>
         <div class="btm-panel-content">
@@ -2478,8 +2539,8 @@ html[dir="rtl"] body {
 
   <!-- Bottom divider: dark gradient sweep -->
   <div class="btm-divider-wrapper">
-    <svg data-no-icon-edit="true" aria-hidden="true" viewbox="0 0 1200 90" preserveaspectratio="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M0,90 L0,45 Q150,20 300,38 T600,25 Q750,12 900,35 T1200,30 L1200,90 Z" fill="#3D1A5E"></path>
+    <svg data-no-icon-edit="true" aria-hidden="true" viewBox="0 0 1200 90" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,90 L0,45 Q150,20 300,38 T600,25 Q750,12 900,35 T1200,30 L1200,90 Z" fill="#3D1A5E"/>
     </svg>
   </div>
 </section>
@@ -2490,13 +2551,13 @@ html[dir="rtl"] body {
   <div class="blog-cta-glow blog-cta-glow--pink" aria-hidden="true"></div>
 
   <!-- Decorative six-pointed star -->
-  <svg class="blog-cta-star blog-cta-star--top" aria-hidden="true" data-no-icon-edit="true" viewbox="0 0 24 24" width="28" height="28" xmlns="http://www.w3.org/2000/svg">
-    <polygon points="12,2 14.5,8.5 21,8.5 15.8,12.8 17.8,19.5 12,15.5 6.2,19.5 8.2,12.8 3,8.5 9.5,8.5" fill="none" stroke="#D9A441" stroke-width="1.2" opacity="0.85"></polygon>
-    <polygon points="12,5 14,9.5 19,9.5 15,12.5 16.5,17.5 12,14.5 7.5,17.5 9,12.5 5,9.5 10,9.5" fill="rgba(217,164,65,0.18)" stroke="none"></polygon>
+  <svg class="blog-cta-star blog-cta-star--top" aria-hidden="true" data-no-icon-edit="true" viewBox="0 0 24 24" width="28" height="28" xmlns="http://www.w3.org/2000/svg">
+    <polygon points="12,2 14.5,8.5 21,8.5 15.8,12.8 17.8,19.5 12,15.5 6.2,19.5 8.2,12.8 3,8.5 9.5,8.5" fill="none" stroke="#D9A441" stroke-width="1.2" opacity="0.85"/>
+    <polygon points="12,5 14,9.5 19,9.5 15,12.5 16.5,17.5 12,14.5 7.5,17.5 9,12.5 5,9.5 10,9.5" fill="rgba(217,164,65,0.18)" stroke="none"/>
   </svg>
 
-  <svg class="blog-cta-star blog-cta-star--bottom" aria-hidden="true" data-no-icon-edit="true" viewbox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
-    <polygon points="12,2 14.5,8.5 21,8.5 15.8,12.8 17.8,19.5 12,15.5 6.2,19.5 8.2,12.8 3,8.5 9.5,8.5" fill="none" stroke="#D9A441" stroke-width="1.2" opacity="0.6"></polygon>
+  <svg class="blog-cta-star blog-cta-star--bottom" aria-hidden="true" data-no-icon-edit="true" viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+    <polygon points="12,2 14.5,8.5 21,8.5 15.8,12.8 17.8,19.5 12,15.5 6.2,19.5 8.2,12.8 3,8.5 9.5,8.5" fill="none" stroke="#D9A441" stroke-width="1.2" opacity="0.6"/>
   </svg>
 
   <!-- Thin gold separator line -->
@@ -2515,8 +2576,8 @@ html[dir="rtl"] body {
     <!-- CTA Button -->
     <a href="/contact" class="blog-cta-btn btn-primary" data-i18n="blog_link_83">
       <span>צרי קשר ונישאר מחוברות</span>
-      <svg aria-hidden="true" data-no-icon-edit="true" width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform: scaleX(-1); flex-shrink:0;">
-        <polyline points="9 18 15 12 9 6"></polyline>
+      <svg aria-hidden="true" data-no-icon-edit="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform: scaleX(-1); flex-shrink:0;">
+        <polyline points="9 18 15 12 9 6"/>
       </svg>
     </a>
 
@@ -2541,7 +2602,7 @@ html[dir="rtl"] body {
       <!-- Column 1: Company Info -->
       <div class="footer-col footer-brand">
         <a href="/" class="footer-logo-link" aria-label="עמוד הבית של דיאנה אזולאי דיוק הנתיב מתוך הנשמה" data-i18n-aria-label="blog_aria_label_115">
-          <img src="/assets/spiritual-coaching-kabbalah-logo.webp" alt="דיאנה אזולאי דיוק הנתיב מתוך הנשמה" class="logo" data-i18n-alt="blog_alt_112">
+          <img src="/assets/spiritual-coaching-kabbalah-logo.webp" alt="דיאנה אזולאי דיוק הנתיב מתוך הנשמה" class="logo" data-i18n-alt="blog_alt_112" />
         </a>
         <p class="footer-tagline" data-i18n="blog_p_43">ליווי רוחני מעמיק דרך חכמת הקבלה — מסע אל תוך הנשמה, לגילוי האור שבך ולחיים של שלמות ומשמעות אמיתית.</p>
         <div class="footer-social" aria-label="רשתות חברתיות" data-i18n-aria-label="blog_aria_label_116">
@@ -2978,9 +3039,11 @@ html[dir="rtl"] body {
       "home_p_36": "ליווי רוחני מעמיק דרך חכמת הקבלה — מסע אל תוך הנשמה, לגילוי האור שבך ולחיים של שלמות ומשמעות אמיתית.",
       "home_p_37": "© 2026 דיאנה אזולאי דיוק הנתיב מתוך הנשמה. כל הזכויות שמורות.",
       "new_a_172": "התחל עכשיו",
+      "new_a_176": "עמוד חדש",
       "new_p_171": "הצטרפו לאלפי לקוחות מרוצים. התחילו את המסע שלכם היום.",
       "new_p_174": "טקסט כאן",
       "new_p_175": "טקסט כאן",
+      "new_p_178": "This page is ready for your content.",
       "about_h1_1": "דיאנה אזולאי —\nמלווה נשים בנתיב הנשמה",
       "about_h2_2": "הנתיב שהוביל אותי אליכן",
       "about_h2_3": "מה אומרות הנשים שעברו את המסע",
@@ -3029,6 +3092,7 @@ html[dir="rtl"] body {
       "home_h3_13": "<span class=\"heading-accent\"></span>ניווט מהיר",
       "home_h3_14": "<span class=\"heading-accent\"></span>יצירת קשר",
       "home_h3_15": "<span class=\"heading-accent\"></span>שעות פעילות",
+      "new_h1_177": "עמוד חדש",
       "new_h2_170": "מוכנים להתחיל?",
       "new_h3_173": "כותרת משנה",
       "terms_h1_1": "תנאי שימוש",
@@ -3468,7 +3532,7 @@ html[dir="rtl"] body {
       "contact_span_48": "— דיאנה אזולאי",
       "contact_span_51": "dianazulay888@gmail.com",
       "contact_span_52": "0526899936",
-      "home_page_title": "התעוררי לנתיב נשמתך עם תקשור יהודי קבלי — דיאנה אזולאי דיוק הנתיב מתוך הנשמה",
+      "home_page_title": "עמוד חדש",
       "privacy_link_39": "דלג לתוכן הראשי",
       "privacy_link_40": "dianazulay888@gmail.com",
       "privacy_link_41": "0526899936",
@@ -4200,9 +4264,11 @@ html[dir="rtl"] body {
       "home_p_36": "Deep spiritual guidance through Kabbalistic wisdom — a journey into the soul, to discover the light within you and live a life of wholeness and true meaning.",
       "home_p_37": "© 2026 Diana Azulay Precise Path from the Soul. All rights reserved.",
       "new_a_172": "Start Now",
+      "new_a_176": "New Page",
       "new_p_171": "Join thousands of satisfied clients. Start your journey today.",
       "new_p_174": "Text here",
       "new_p_175": "Text here",
+      "new_p_178": "This page is ready for your content.",
       "about_h1_1": "Diana Azulay —\nGuiding Women on the Soul's Path",
       "about_h2_2": "The Path That Led Me to You",
       "about_h2_3": "What Women Who Took the Journey Say",
@@ -4251,6 +4317,7 @@ html[dir="rtl"] body {
       "home_h3_13": "Quick Navigation",
       "home_h3_14": "Contact",
       "home_h3_15": "Operating Hours",
+      "new_h1_177": "New Page",
       "new_h2_170": "Ready to Begin?",
       "new_h3_173": "Subtitle",
       "terms_h1_1": "Terms of Use",
@@ -4690,7 +4757,7 @@ html[dir="rtl"] body {
       "contact_span_48": "— Diana Azulay",
       "contact_span_51": "dianazulay888@gmail.com",
       "contact_span_52": "0526899936",
-      "home_page_title": "Awaken to Your Soul's Path with Jewish Kabbalistic Channeling — Diana Azulay Precise Path from the Soul",
+      "home_page_title": "New Page",
       "privacy_link_39": "Skip to main content",
       "privacy_link_40": "dianazulay888@gmail.com",
       "privacy_link_41": "0526899936",

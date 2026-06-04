@@ -2803,10 +2803,11 @@ html[dir="rtl"] .footer-contact li > a { flex-direction: row !important; }
   margin: 28px auto 0;
 }
 
+/* ── Grid ── */
 .index-services-section__grid {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 16px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
   direction: rtl;
 }
 

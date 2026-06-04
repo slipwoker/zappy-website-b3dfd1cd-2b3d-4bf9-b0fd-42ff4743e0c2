@@ -11788,6 +11788,10 @@ div[id*="mic-access-tool-box"] button[class*="reset"] * {
   .hero h1, .hero-section h1, [class*="hero-"] h1, [class~="hero"] h1, .hero .hero-title, .hero-title { font-size: 28px !important; }
 }
 
+
+.index-hero-section .index-hero-section__description {
+  color: #FFF9FE;
+}
 /* mobile-submenu-overflow-fix */
 @media (max-width: 768px) {
   .navbar .sub-menu.mobile-expanded,

@@ -1,4 +1,4 @@
-# דיאנה אזולאי דיוק הנתיב מתוך הנשמה — Generative Engine Optimization Map
+# דיאנה אזולאי תקשור יהודי קבלי — Generative Engine Optimization Map
 
 > Diana Azulay is a Jewish Kabbalistic communicator and soul coach who guides women through transformative journeys of clarity, emotional release, and spiritual alignment. Her brand blends ancient Jewish mysticism with modern personal development, creating a luxurious, feminine, and deeply trustworthy atmosphere. The visual identity draws on sacred geometry, soft light, and subtle Jewish symbols — evoking depth, inner peace, and divine guidance. She offers services ranging from Kabbalistic communication and dream interpretation to spiritual journeys and energetic healing, all rooted in helping women reconnect with their soul's path.
 
@@ -71,7 +71,7 @@ Information about WCAG compliance and accessibility features.
 
 # Business Context (for LLM understanding)
 
-## About דיאנה אזולאי דיוק הנתיב מתוך הנשמה
+## About דיאנה אזולאי תקשור יהודי קבלי
 Diana Azulay is a Jewish Kabbalistic communicator and soul coach who guides women through transformative journeys of clarity, emotional release, and spiritual alignment. Her brand blends ancient Jewish mysticism with modern personal development, creating a luxurious, feminine, and deeply trustworthy atmosphere. The visual identity draws on sacred geometry, soft light, and subtle Jewish symbols — evoking depth, inner peace, and divine guidance. She offers services ranging from Kabbalistic communication and dream interpretation to spiritual journeys and energetic healing, all rooted in helping women reconnect with their soul's path.
 
 ## Services/Products

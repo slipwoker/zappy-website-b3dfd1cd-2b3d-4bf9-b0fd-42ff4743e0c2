@@ -92,6 +92,24 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/contact" />
   </url>
   <url>
+    <loc>https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/personal-guidance-meeting</loc>
+    <lastmod>2026-06-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="he" href="https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/personal-guidance-meeting" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/en/personal-guidance-meeting" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/personal-guidance-meeting" />
+  </url>
+  <url>
+    <loc>https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/en/personal-guidance-meeting</loc>
+    <lastmod>2026-06-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="he" href="https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/personal-guidance-meeting" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/en/personal-guidance-meeting" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/personal-guidance-meeting" />
+  </url>
+  <url>
     <loc>https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/privacy</loc>
     <lastmod>2026-06-06</lastmod>
     <changefreq>monthly</changefreq>

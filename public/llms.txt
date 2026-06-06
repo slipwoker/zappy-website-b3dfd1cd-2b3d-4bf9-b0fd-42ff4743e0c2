@@ -18,6 +18,9 @@ https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/about
 https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/services
 מתקשור קבלי ופענוח חלומות ועד ריפוי אנרגטי ומסעות רוחניים — כל שירות נבנה כדי לשחרר חסימות ודפוסים רגשיים נשמתיים ולהחזיר אותך לעצמך. בחרי את המסע שלך היום.
 
+### Page
+https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/personal-guidance-meeting
+
 ### תובנות מהנשמה שישנו את הדרך שאת רואה את עצמך — דיאנה אזולאי דיוק הנתיב מתוך הנשמה
 https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/blog
 מאמרים עמוקים על קבלה, זוגיות, ייעוד ושחרור רגשי — כתובים מתוך לב ונשמה. קבלי מסרים משורש הנשמה שיסייעו לך בהכוונה ושיפור זוגיות, חיזוק עצמי ומציאת דרכך האמיתית.
@@ -25,9 +28,6 @@ https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/blog
 ### צעד אחד מפריד בינך לבין הנתיב — דיאנה אזולאי דיוק הנתיב מתוך הנשמה
 https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/contact
 מוכנה לקבל החלטות בחיים מתוך בהירות ועוצמה? צרי קשר עם דיאנה אזולאי ותתחילי מסע של הכוונה רוחנית אישית, תקשור קבלי וחיבור עמוק לנשמה. המקום שלך מחכה לך.
-
-### Page
-https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/personal-guidance-meeting
 
 ## Legal & Policy
 
@@ -62,7 +62,7 @@ Information about WCAG compliance and accessibility features.
   - `email` (email, required)
   - `phone` (tel)
   - `message` (textarea, required)
-  - `privacy_consent` (checkbox)
+  - `privacy_consent` (checkbox, required)
 
 ---
 

@@ -7,40 +7,40 @@
 ## Pages
 
 ### התעוררי לנתיב נשמתך עם תקשור יהודי קבלי — דיאנה אזולאי דיוק הנתיב מתוך הנשמה
-https://example.com
+https://diana-azulay-dyuk-hanetiv-mito.zappy5.app
 דיאנה אזולאי מובילה נשים למסע טרנספורמטיבי של בהירות, שחרור רגשי ויישור רוחני דרך תקשור יהודי קבלי. גלי את שורש נשמתך והתחילי לחיות את ייעודך האמיתי.
 
 ### הכירי את דיאנה — המתקשרת שתוביל אותך הביתה — דיאנה אזולאי דיוק הנתיב מתוך הנשמה
-https://example.com/about
+https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/about
 דיאנה אזולאי היא מתקשרת קבלית יהודית ומאמנת נשמה עם שנות ניסיון בהובלת נשים לחיזוק בטחון עצמי, מציאת ייעוד ויישור עם קול הנשמה הפנימי. גלי מי עומדת מאחורי השינוי.
 
 ### שירותים שמשנים חיים מהשורש — דיאנה אזולאי דיוק הנתיב מתוך הנשמה
-https://example.com/services
+https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/services
 מתקשור קבלי ופענוח חלומות ועד ריפוי אנרגטי ומסעות רוחניים — כל שירות נבנה כדי לשחרר חסימות ודפוסים רגשיים נשמתיים ולהחזיר אותך לעצמך. בחרי את המסע שלך היום.
 
 ### תובנות מהנשמה שישנו את הדרך שאת רואה את עצמך — דיאנה אזולאי דיוק הנתיב מתוך הנשמה
-https://example.com/blog
+https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/blog
 מאמרים עמוקים על קבלה, זוגיות, ייעוד ושחרור רגשי — כתובים מתוך לב ונשמה. קבלי מסרים משורש הנשמה שיסייעו לך בהכוונה ושיפור זוגיות, חיזוק עצמי ומציאת דרכך האמיתית.
 
 ### Page
-https://example.com/menu-group-1780612279010
+https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/menu-group-1780612279010
 
 ### צעד אחד מפריד בינך לבין הנתיב — דיאנה אזולאי דיוק הנתיב מתוך הנשמה
-https://example.com/contact
+https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/contact
 מוכנה לקבל החלטות בחיים מתוך בהירות ועוצמה? צרי קשר עם דיאנה אזולאי ותתחילי מסע של הכוונה רוחנית אישית, תקשור קבלי וחיבור עמוק לנשמה. המקום שלך מחכה לך.
 
 ## Legal & Policy
 
 ### Privacy Policy
-https://example.com/privacy
+https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/privacy
 Information about how user data is collected, stored, and protected.
 
 ### Terms & Conditions
-https://example.com/terms
+https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/terms
 Legal terms describing service usage, rights, and policies.
 
 ### Accessibility Statement
-https://example.com/accessibility
+https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/accessibility
 Information about WCAG compliance and accessibility features.
 
 ---
@@ -53,8 +53,8 @@ Information about WCAG compliance and accessibility features.
 - Address: ספיר, חריש, ישראל
 
 ### Contact form
-- URL: https://example.com/contact
-- Endpoint: https://example.com/api/email/contact-form
+- URL: https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/contact
+- Endpoint: https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/api/email/contact-form
 - Method: POST
 - Content-Type: application/json
 - Fields:
@@ -92,6 +92,6 @@ Spiritual Coaching & Kabbalah
 
 # Machine-readable feeds
 
-- Sitemap (XML): https://example.com/sitemap.xml
-- Robots: https://example.com/robots.txt
-- Flattened page text (for LLMs): https://example.com/llms-full.txt
+- Sitemap (XML): https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/sitemap.xml
+- Robots: https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/robots.txt
+- Flattened page text (for LLMs): https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/llms-full.txt

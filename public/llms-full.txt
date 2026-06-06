@@ -2,13 +2,13 @@
 
 Diana Azulay is a Jewish Kabbalistic communicator and soul coach who guides women through transformative journeys of clarity, emotional release, and spiritual alignment. Her brand blends ancient Jewish mysticism with modern personal development, creating a luxurious, feminine, and deeply trustworthy atmosphere. The visual identity draws on sacred geometry, soft light, and subtle Jewish symbols — evoking depth, inner peace, and divine guidance. She offers services ranging from Kabbalistic communication and dream interpretation to spiritual journeys and energetic healing, all rooted in helping women reconnect with their soul's path.
 
-Source: https://example.com
+Source: https://diana-azulay-dyuk-hanetiv-mito.zappy5.app
 
 ---
 
 ## התעוררי לנתיב נשמתך עם תקשור יהודי קבלי — דיאנה אזולאי דיוק הנתיב מתוך הנשמה
 
-URL: https://example.com
+URL: https://diana-azulay-dyuk-hanetiv-mito.zappy5.app
 Description: דיאנה אזולאי מובילה נשים למסע טרנספורמטיבי של בהירות, שחרור רגשי ויישור רוחני דרך תקשור יהודי קבלי. גלי את שורש נשמתך והתחילי לחיות את ייעודך האמיתי.
 
 התעוררי לנתיב נשמתך עם תקשור יהודי קבלי — דיאנה אזולאי דיוק הנתיב מתוך הנשמה
@@ -135,7 +135,7 @@ English
 
 
 
-#
+# דיוק הנתיב מתוך הנשמה
 
 
 
@@ -146,7 +146,7 @@ English
 # דיוק הנתיב מתוך הנשמה
 
 
-###
+### תקשור יהודי קבלי | אימון נפשי | מסעות רוחניים
 
 ### תקשור יהודי קבלי | אימון נפשי | מסעות רוחניים
 
@@ -364,7 +364,7 @@ English
 
 
 
-✦ &amp;nbsp; נשמות שמצאו את דרכן &amp;nbsp; ✦
+✦   נשמות שמצאו את דרכן   ✦
 
 
 ## מה אומרות הנשים שעברו את המסע
@@ -584,7 +584,7 @@ English
 
 ## הכירי את דיאנה — המתקשרת שתוביל אותך הביתה — דיאנה אזולאי דיוק הנתיב מתוך הנשמה
 
-URL: https://example.com/about
+URL: https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/about
 Description: דיאנה אזולאי היא מתקשרת קבלית יהודית ומאמנת נשמה עם שנות ניסיון בהובלת נשים לחיזוק בטחון עצמי, מציאת ייעוד ויישור עם קול הנשמה הפנימי. גלי מי עומדת מאחורי השינוי.
 
 הכירי את דיאנה — המתקשרת שתוביל אותך הביתה — דיאנה אזולאי דיוק הנתיב מתוך הנשמה
@@ -1242,7 +1242,7 @@ English
 
 ## שירותים שמשנים חיים מהשורש — דיאנה אזולאי דיוק הנתיב מתוך הנשמה
 
-URL: https://example.com/services
+URL: https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/services
 Description: מתקשור קבלי ופענוח חלומות ועד ריפוי אנרגטי ומסעות רוחניים — כל שירות נבנה כדי לשחרר חסימות ודפוסים רגשיים נשמתיים ולהחזיר אותך לעצמך. בחרי את המסע שלך היום.
 
 שירותים שמשנים חיים מהשורש — דיאנה אזולאי דיוק הנתיב מתוך הנשמה
@@ -2004,7 +2004,7 @@ English
 
 ## תובנות מהנשמה שישנו את הדרך שאת רואה את עצמך — דיאנה אזולאי דיוק הנתיב מתוך הנשמה
 
-URL: https://example.com/blog
+URL: https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/blog
 Description: מאמרים עמוקים על קבלה, זוגיות, ייעוד ושחרור רגשי — כתובים מתוך לב ונשמה. קבלי מסרים משורש הנשמה שיסייעו לך בהכוונה ושיפור זוגיות, חיזוק עצמי ומציאת דרכך האמיתית.
 
 תובנות מהנשמה שישנו את הדרך שאת רואה את עצמך — דיאנה אזולאי דיוק הנתיב מתוך הנשמה
@@ -2421,6 +2421,12 @@ English
 
 עולמות
 
+
+
+
+
+
+
 הידע
 
 
@@ -2629,7 +2635,7 @@ English
 
 ## מדיניות פרטיות
 
-URL: https://example.com/privacy
+URL: https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/privacy
 Description: מדיניות הפרטיות שלנו - כיצד אנו אוספים, משתמשים ומגנים על המידע שלכם
 
 מדיניות פרטיות
@@ -2934,7 +2940,7 @@ English
 
 ## הצהרת נגישות
 
-URL: https://example.com/accessibility
+URL: https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/accessibility
 Description: הצהרת הנגישות שלנו - מחויבותנו לנגישות דיגיטלית
 
 הצהרת נגישות
@@ -3248,7 +3254,7 @@ English
 
 ## תנאי שימוש
 
-URL: https://example.com/terms
+URL: https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/terms
 Description: תנאי השימוש באתר - הזכויות והחובות של המשתמשים
 
 תנאי שימוש
@@ -3581,7 +3587,7 @@ English
 
 ## צעד אחד מפריד בינך לבין הנתיב — דיאנה אזולאי דיוק הנתיב מתוך הנשמה
 
-URL: https://example.com/contact
+URL: https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/contact
 Description: מוכנה לקבל החלטות בחיים מתוך בהירות ועוצמה? צרי קשר עם דיאנה אזולאי ותתחילי מסע של הכוונה רוחנית אישית, תקשור קבלי וחיבור עמוק לנשמה. המקום שלך מחכה לך.
 
 צעד אחד מפריד בינך לבין הנתיב — דיאנה אזולאי דיוק הנתיב מתוך הנשמה
@@ -3789,7 +3795,7 @@ English
 
 
 
-קראתי ואני מסכים/ה ל   תנאי השימוש    ול   מדיניות הפרטיות
+קראתי ואני מסכים/ה ל  תנאי השימוש   ול  מדיניות הפרטיות
 
 
 
@@ -4004,7 +4010,7 @@ English
 
 
 
-✦   נשמות שמצאו את דרכן   ✦
+✦ &amp;amp;amp;nbsp; נשמות שמצאו את דרכן &amp;amp;amp;nbsp; ✦
 
 
 ## מה אומרות הנשים שעברו את המסע

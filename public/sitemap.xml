@@ -128,6 +128,24 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/questions-and-answers" />
   </url>
   <url>
+    <loc>https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/services/four-session-process</loc>
+    <lastmod>2026-06-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="he" href="https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/services/four-session-process" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/en/services/four-session-process" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/services/four-session-process" />
+  </url>
+  <url>
+    <loc>https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/en/services/four-session-process</loc>
+    <lastmod>2026-06-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="he" href="https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/services/four-session-process" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/en/services/four-session-process" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/services/four-session-process" />
+  </url>
+  <url>
     <loc>https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/privacy</loc>
     <lastmod>2026-06-08</lastmod>
     <changefreq>monthly</changefreq>

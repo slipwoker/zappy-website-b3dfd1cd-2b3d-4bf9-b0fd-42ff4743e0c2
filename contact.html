@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="he" dir="rtl">
-<head>
+<!DOCTYPE html><html lang="he" dir="rtl"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="index, follow">
@@ -161,26 +159,31 @@
       // Track button clicks (counted as actions)
       if (target.tagName === 'BUTTON' || target.closest('button')) {
         var button = target.tagName === 'BUTTON' ? target : target.closest('button');
-        trackEvent('click', {
+        var clickMeta = {
           element: 'button',
           text: button.textContent.trim().substring(0, 100),
           id: button.id || null,
           class: button.className || null
-        });
+        };
+        
+        trackEvent('click', clickMeta);
       }
       
       // Track link clicks (navigation - not counted as actions)
       else if (target.tagName === 'A' || target.closest('a')) {
         var link = target.tagName === 'A' ? target : target.closest('a');
-        trackEvent('navigation', {
+        var navMeta = {
           element: 'link',
           text: link.textContent.trim().substring(0, 100),
           href: link.href,
           external: link.hostname !== window.location.hostname
-        });
+        };
+        
+        trackEvent('navigation', navMeta);
       }
     }, true);
   }
+  
   
   // Track form submissions
   if (config.trackFormSubmissions) {
@@ -218,6 +221,467 @@
 })();
 </script>
 <!-- End Zappy Analytics -->
+<!-- Zappy Marketing Events -->
+<script>
+(function() {
+  'use strict';
+  if (window.zappyFireMarketingEvent) return;
+
+  var ECOM_MODE = "";
+  var IS_CATALOG = false;
+  var IS_FULL = false;
+
+  var ECOM_ALIAS = {
+    begin_checkout: 'checkout_started',
+    purchase: 'checkout_complete',
+    add_to_cart: 'add_to_cart',
+    view_product: 'view_product'
+  };
+
+  function pagePath() {
+    try {
+      if (window.ZAPPY_CONFIG && window.ZAPPY_CONFIG.currentPagePath) {
+        return window.ZAPPY_CONFIG.currentPagePath;
+      }
+    } catch (e) {}
+    try { return window.location.pathname || '/'; } catch (e2) { return '/'; }
+  }
+
+  function normalizeItems(meta) {
+    meta = meta || {};
+    var raw = meta.items || meta.cartItems || meta.cart_items || meta.lineItems || [];
+    if (!Array.isArray(raw)) raw = [];
+    var out = [];
+    for (var i = 0; i < raw.length; i++) {
+      var item = raw[i];
+      if (!item || typeof item !== 'object') continue;
+      var id = String(item.item_id || item.productId || item.product_id || item.id || '').trim();
+      var name = String(item.item_name || item.productName || item.product_name || item.name || '').trim();
+      var price = parseFloat(item.price != null ? item.price : (item.unitPrice != null ? item.unitPrice : 0)) || 0;
+      var quantity = Math.max(1, parseInt(item.quantity != null ? item.quantity : (item.qty != null ? item.qty : 1), 10) || 1);
+      if (!id && !name) continue;
+      out.push({ item_id: id || name, item_name: name || id, price: price, quantity: quantity });
+    }
+    return out;
+  }
+
+  function buildGa4Params(eventId, meta) {
+    meta = meta || {};
+    var items = normalizeItems(meta);
+    var value = parseFloat(meta.value != null ? meta.value : (meta.total != null ? meta.total : 0)) || 0;
+    var currency = String(meta.currency || 'USD').toUpperCase();
+
+    if (eventId === 'checkout_complete') {
+      return {
+        transaction_id: String(meta.transaction_id || meta.orderId || meta.order_id || meta.orderNumber || '') || undefined,
+        value: value,
+        currency: currency,
+        items: items
+      };
+    }
+    if (eventId === 'checkout_started') {
+      return { value: value, currency: currency, items: items };
+    }
+    if (eventId === 'add_to_cart') {
+      var atcItems = items.length ? items : [{
+        item_id: String(meta.productId || meta.product_id || ''),
+        item_name: String(meta.productName || meta.product_name || ''),
+        price: parseFloat(meta.value != null ? meta.value : (meta.price != null ? meta.price : 0)) || 0,
+        quantity: parseInt(meta.quantity != null ? meta.quantity : 1, 10) || 1
+      }].filter(function(x) { return x.item_id || x.item_name; });
+      return {
+        value: value || (atcItems[0] ? atcItems[0].price * atcItems[0].quantity : 0),
+        currency: currency,
+        items: atcItems
+      };
+    }
+    if (eventId === 'view_product') {
+      var vpItems = items.length ? items : [{
+        item_id: String(meta.productId || meta.product_id || ''),
+        item_name: String(meta.productName || meta.product_name || ''),
+        price: parseFloat(meta.price != null ? meta.price : (meta.value != null ? meta.value : 0)) || 0,
+        quantity: 1
+      }].filter(function(x) { return x.item_id || x.item_name; });
+      return {
+        currency: currency,
+        value: value || (vpItems[0] ? vpItems[0].price : 0),
+        items: vpItems
+      };
+    }
+    if (eventId === 'whatsapp_click' || eventId === 'phone_click') {
+      return { method: eventId === 'whatsapp_click' ? 'whatsapp' : 'phone', page_path: meta.pagePath || pagePath() };
+    }
+    if (eventId === 'contact_form_submitted' || eventId === 'product_inquiry') {
+      return { page_path: meta.pagePath || pagePath() };
+    }
+    return meta;
+  }
+
+  function buildMetaParams(eventId, meta) {
+    meta = meta || {};
+    var items = normalizeItems(meta);
+    var value = parseFloat(meta.value != null ? meta.value : (meta.total != null ? meta.total : 0)) || 0;
+    var currency = String(meta.currency || 'USD').toUpperCase();
+    var contentIds = [];
+    var numItems = 0;
+    for (var i = 0; i < items.length; i++) {
+      if (items[i].item_id) contentIds.push(items[i].item_id);
+      numItems += items[i].quantity || 1;
+    }
+
+    if (eventId === 'checkout_complete') {
+      return {
+        value: value,
+        currency: currency,
+        content_ids: contentIds.length ? contentIds : undefined,
+        content_type: 'product',
+        num_items: numItems || undefined,
+        order_id: String(meta.order_id || meta.orderId || meta.transaction_id || meta.orderNumber || '') || undefined
+      };
+    }
+    if (eventId === 'checkout_started') {
+      return {
+        value: value,
+        currency: currency,
+        content_ids: contentIds.length ? contentIds : undefined,
+        content_type: 'product',
+        num_items: numItems || parseInt(meta.itemCount != null ? meta.itemCount : 0, 10) || undefined
+      };
+    }
+    if (eventId === 'add_to_cart') {
+      var id = String(meta.productId || meta.product_id || contentIds[0] || '');
+      return {
+        value: value || (items[0] ? items[0].price * items[0].quantity : 0),
+        currency: currency,
+        content_ids: id ? [id] : (contentIds.length ? contentIds : undefined),
+        content_type: 'product',
+        content_name: meta.productName || meta.product_name || (items[0] && items[0].item_name),
+        num_items: parseInt(meta.quantity != null ? meta.quantity : (numItems || 1), 10) || 1
+      };
+    }
+    if (eventId === 'view_product') {
+      var vid = String(meta.productId || meta.product_id || contentIds[0] || '');
+      return {
+        value: value || parseFloat(meta.price != null ? meta.price : 0) || 0,
+        currency: currency,
+        content_ids: vid ? [vid] : (contentIds.length ? contentIds : undefined),
+        content_type: 'product',
+        content_name: meta.productName || meta.product_name || (items[0] && items[0].item_name)
+      };
+    }
+    if (eventId === 'whatsapp_click' || eventId === 'phone_click') {
+      return {
+        content_name: eventId === 'whatsapp_click' ? 'WhatsApp' : 'Phone',
+        content_category: 'contact'
+      };
+    }
+    if (eventId === 'contact_form_submitted' || eventId === 'product_inquiry') {
+      return {
+        content_name: eventId === 'product_inquiry' ? 'Product inquiry' : 'Contact form',
+        content_category: meta.productName || meta.product_name || undefined
+      };
+    }
+    return meta;
+  }
+
+  var PLATFORM = {
+    whatsapp_click: { ga4: 'contact', meta: 'Contact', gtm: 'whatsapp_click', ecom: false },
+    phone_click: { ga4: 'contact', meta: 'Contact', gtm: 'phone_click', ecom: false },
+    contact_form_submitted: { ga4: 'generate_lead', meta: 'Lead', gtm: 'contact_form_submitted', ecom: false },
+    checkout_started: { ga4: 'begin_checkout', meta: 'InitiateCheckout', gtm: 'begin_checkout', ecom: true },
+    checkout_complete: { ga4: 'purchase', meta: 'Purchase', gtm: 'purchase', ecom: true },
+    product_inquiry: { ga4: 'generate_lead', meta: 'Lead', gtm: 'product_inquiry', ecom: false },
+    add_to_cart: { ga4: 'add_to_cart', meta: 'AddToCart', gtm: 'add_to_cart', ecom: true },
+    view_product: { ga4: 'view_item', meta: 'ViewContent', gtm: 'view_item', ecom: true }
+  };
+
+  function purchaseDedupKey(orderId) {
+    return 'zappy_purchase_fired_' + String(orderId || '');
+  }
+
+  function purchaseMetaDedupKey(orderId) {
+    return 'zappy_purchase_meta_fired_' + String(orderId || '');
+  }
+
+  function alreadyFiredPurchase(orderId) {
+    if (!orderId) return false;
+    try {
+      return window.sessionStorage.getItem(purchaseDedupKey(orderId)) === '1';
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function markPurchaseFired(orderId) {
+    if (!orderId) return;
+    try { window.sessionStorage.setItem(purchaseDedupKey(orderId), '1'); } catch (e) {}
+  }
+
+  function alreadyFiredPurchaseMeta(orderId) {
+    if (!orderId) return false;
+    try {
+      return window.sessionStorage.getItem(purchaseMetaDedupKey(orderId)) === '1';
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function markPurchaseMetaFired(orderId) {
+    if (!orderId) return;
+    try { window.sessionStorage.setItem(purchaseMetaDedupKey(orderId), '1'); } catch (e) {}
+  }
+
+  function getPendingMetaEvents() {
+    try {
+      if (!Array.isArray(window.__zappyPendingMetaEvents)) {
+        window.__zappyPendingMetaEvents = [];
+      }
+      return window.__zappyPendingMetaEvents;
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function enqueueMetaEvent(eventName, params, orderId) {
+    var q = getPendingMetaEvents();
+    if (orderId) {
+      for (var i = 0; i < q.length; i++) {
+        if (q[i] && q[i].orderId === orderId && q[i].eventName === eventName) return;
+      }
+    }
+    q.push({ eventName: eventName, params: params || {}, orderId: orderId || null });
+  }
+
+  /**
+   * Live sites replace the eager Meta snippet with a consent-gated lazy
+   * loader. Payment providers bounce the shopper back to /order-success
+   * before CookieConsent hydrates, so confirm-order used to fire Purchase
+   * while window.fbq was still undefined — then sessionStorage blocked a
+   * retry. Queue until fbq exists, then flush.
+   */
+  function flushPendingMetaEvents() {
+    if (typeof window.fbq !== 'function') return;
+    var q = getPendingMetaEvents().slice();
+    try { window.__zappyPendingMetaEvents = []; } catch (e) {}
+    for (var i = 0; i < q.length; i++) {
+      var item = q[i];
+      if (!item || !item.eventName) continue;
+      if (item.orderId && alreadyFiredPurchaseMeta(item.orderId)) continue;
+      try {
+        window.fbq('track', item.eventName, item.params || {});
+        if (item.orderId) markPurchaseMetaFired(item.orderId);
+      } catch (e2) {}
+    }
+  }
+  window.zappyFlushPendingMetaEvents = flushPendingMetaEvents;
+
+  var metaFlushAttempts = 0;
+  var metaFlushTimer = setInterval(function() {
+    metaFlushAttempts++;
+    flushPendingMetaEvents();
+    var pendingLen = 0;
+    try { pendingLen = (window.__zappyPendingMetaEvents || []).length; } catch (e) {}
+    if ((pendingLen === 0 && typeof window.fbq === 'function') || metaFlushAttempts > 60) {
+      clearInterval(metaFlushTimer);
+    }
+  }, 500);
+
+  /**
+   * Fire a marketing event to first-party analytics + GA4/GTM/Meta when present.
+   * @param {string} eventName marketing ID or ecommerce alias
+   * @param {object} [metadata]
+   * @param {{ skipFirstParty?: boolean }} [opts]
+   */
+  window.zappyFireMarketingEvent = function(eventName, metadata, opts) {
+    try {
+      opts = opts || {};
+      metadata = metadata || {};
+      var eventId = ECOM_ALIAS[eventName] || eventName;
+      var plat = PLATFORM[eventId];
+      if (!plat) return;
+
+      if (!metadata.pagePath && !metadata.page_path) {
+        metadata.pagePath = pagePath();
+      }
+
+      var oid = '';
+      var purchaseAlreadySent = false;
+      var purchaseMetaAlreadySent = false;
+      if (eventId === 'checkout_complete') {
+        oid = String(metadata.orderId || metadata.order_id || metadata.transaction_id || '');
+        purchaseAlreadySent = !!(oid && alreadyFiredPurchase(oid));
+        purchaseMetaAlreadySent = !!(oid && alreadyFiredPurchaseMeta(oid));
+        if (purchaseAlreadySent && purchaseMetaAlreadySent) return;
+      }
+
+      // First-party (skip when already tracked via zappyTrackEcomAnalytics path
+      // that opts out, or when caller already recorded under a different name)
+      if (!opts.skipFirstParty && !purchaseAlreadySent) {
+        try {
+          if (window.zappyAnalytics && typeof window.zappyAnalytics.track === 'function') {
+            window.zappyAnalytics.track(eventId, metadata);
+          }
+        } catch (e1) {}
+      }
+
+      // GTM / dataLayer — platform-standard ecommerce event names
+      if (!purchaseAlreadySent) {
+        try {
+          window.dataLayer = window.dataLayer || [];
+          if (plat.ecom) {
+            var ga4ForGtm = buildGa4Params(eventId, metadata);
+            var ecommerce = {};
+            if (ga4ForGtm.transaction_id) ecommerce.transaction_id = ga4ForGtm.transaction_id;
+            if (ga4ForGtm.value != null) ecommerce.value = ga4ForGtm.value;
+            if (ga4ForGtm.currency) ecommerce.currency = ga4ForGtm.currency;
+            if (ga4ForGtm.items) ecommerce.items = ga4ForGtm.items;
+            window.dataLayer.push({ event: plat.gtm, ecommerce: ecommerce });
+            // Secondary Zappy-specific trigger for merchants who want it
+            if (eventId === 'checkout_complete' || eventId === 'checkout_started') {
+              window.dataLayer.push({ event: eventId, ecommerce: ecommerce });
+            }
+          } else {
+            var dl = { event: plat.gtm };
+            for (var k in metadata) {
+              if (Object.prototype.hasOwnProperty.call(metadata, k)) dl[k] = metadata[k];
+            }
+            window.dataLayer.push(dl);
+          }
+        } catch (e2) {}
+
+        // GA4 gtag
+        try {
+          if (typeof window.gtag === 'function') {
+            window.gtag('event', plat.ga4, buildGa4Params(eventId, metadata));
+          }
+        } catch (e3) {}
+
+        if (oid) markPurchaseFired(oid);
+      }
+
+      // Meta Pixel — live sites lazy-load fbq after marketing consent. If the
+      // stub is not defined yet, queue and flush when the pixel arrives.
+      try {
+        if (purchaseMetaAlreadySent) {
+          // already delivered to Meta
+        } else {
+          var metaParams = buildMetaParams(eventId, metadata);
+          if (typeof window.fbq === 'function') {
+            window.fbq('track', plat.meta, metaParams);
+            if (oid) markPurchaseMetaFired(oid);
+          } else {
+            enqueueMetaEvent(plat.meta, metaParams, eventId === 'checkout_complete' ? oid : null);
+          }
+        }
+      } catch (e4) {}
+    } catch (err) {}
+  };
+
+  // ---- Click listeners (capture) ----
+  var recent = Object.create(null);
+  function dedupe(key) {
+    var now = Date.now();
+    if (recent[key] && now - recent[key] < 800) return true;
+    recent[key] = now;
+    return false;
+  }
+
+  function closest(el, selector) {
+    if (!el) return null;
+    if (el.closest) return el.closest(selector);
+    return null;
+  }
+
+  function findAnchor(el) {
+    var node = el;
+    while (node && node !== document) {
+      if (node.tagName === 'A') return node;
+      node = node.parentElement;
+    }
+    return null;
+  }
+
+  function isWhatsAppHref(href) {
+    if (!href) return false;
+    var h = String(href).toLowerCase();
+    return h.indexOf('wa.me/') !== -1 ||
+      h.indexOf('api.whatsapp.com') !== -1 ||
+      h.indexOf('whatsapp.com/send') !== -1 ||
+      h.indexOf('whatsapp:') === 0;
+  }
+
+  document.addEventListener('click', function(e) {
+    try {
+      var target = e.target;
+      if (!target) return;
+
+      // WhatsApp
+      var waFloat = closest(target, '.whatsapp-float, a.whatsapp-float, [data-zappy-whatsapp]');
+      var anchor = findAnchor(target);
+      var href = (anchor && anchor.href) || '';
+      if (waFloat || (anchor && isWhatsAppHref(href))) {
+        if (!dedupe('wa:' + href)) {
+          var waSource = waFloat ? 'float' : 'link';
+          window.zappyFireMarketingEvent('whatsapp_click', {
+            source: waSource,
+            href: href || null,
+            pagePath: pagePath()
+          });
+        }
+        return;
+      }
+
+      // Phone
+      var phoneBtn = closest(target, '.phone-header-btn, .nav-phone-btn, .call-btn, [data-zappy-phone]');
+      var telHref = '';
+      if (anchor && anchor.href && String(anchor.href).toLowerCase().indexOf('tel:') === 0) {
+        telHref = anchor.href;
+      } else if (phoneBtn && phoneBtn.href && String(phoneBtn.href).toLowerCase().indexOf('tel:') === 0) {
+        telHref = phoneBtn.href;
+      }
+      if (phoneBtn || telHref) {
+        var phone = '';
+        if (telHref) {
+          phone = String(telHref).replace(/^tel:/i, '').trim();
+        }
+        if (!dedupe('tel:' + (phone || (phoneBtn && phoneBtn.id) || 'btn'))) {
+          window.zappyFireMarketingEvent('phone_click', {
+            source: phoneBtn ? 'button' : 'link',
+            phone: phone || null,
+            href: telHref || null,
+            pagePath: pagePath()
+          });
+        }
+        return;
+      }
+
+      // Catalog / product inquiry
+      if (IS_CATALOG || IS_FULL) {
+        var inq = closest(target, '.card-inquiry-btn, #zappy-pdp-inquiry-btn, a.inquiry-btn');
+        if (inq) {
+          if (!dedupe('inq:' + (inq.id || inq.className))) {
+            var product = window.currentProduct || null;
+            var productId = (inq.getAttribute && inq.getAttribute('data-product-id')) ||
+              (product && product.id) || null;
+            var productName = (inq.getAttribute && inq.getAttribute('data-product-name')) ||
+              (product && product.name) || null;
+            var channel = 'contact_page';
+            var inqHref = (inq.tagName === 'A' && inq.href) ? inq.href : '';
+            if (inqHref && String(inqHref).toLowerCase().indexOf('mailto:') === 0) channel = 'mailto';
+            window.zappyFireMarketingEvent('product_inquiry', {
+              source: inq.id === 'zappy-pdp-inquiry-btn' ? 'pdp' : 'card',
+              productId: productId,
+              productName: productName,
+              channel: channel,
+              pagePath: pagePath()
+            });
+          }
+        }
+      }
+    } catch (err) {}
+  }, true);
+})();
+</script>
     <meta property="og:title" content="צעד אחד מפריד בינך לבין הנתיב — דיאנה אזולאי דיוק הנתיב מתוך הנשמה">
     <meta property="og:description" content="מוכנה לקבל החלטות בחיים מתוך בהירות ועוצמה? צרי קשר עם דיאנה אזולאי ותתחילי מסע של הכוונה רוחנית אישית, תקשור קבלי וחיבור עמוק לנשמה. המקום שלך מחכה לך.">
     <meta name="twitter:card" content="summary_large_image">
@@ -238,7 +702,6 @@
   
   
   
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     .skip-link { position: absolute; top: 0; left: 0; transform: translateY(-200%); padding: 12px 18px; background: var(--bg-dark, #1a1a1a); color: var(--text-light, #fff); font-weight: 600; border-radius: 0 0 8px 0; z-index: 10000; }
     .skip-link:focus { transform: none; outline: 2px solid var(--ring, #fff); outline-offset: 2px; }
@@ -257,9 +720,9 @@
     <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
     <!-- Cookie Consent -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanilla-cookieconsent@3/dist/cookieconsent.css">
-    <script src="https://cdn.jsdelivr.net/npm/vanilla-cookieconsent@3/dist/cookieconsent.umd.js"></script>
+    
     <!-- Mickidum Accessibility Toolbar -->
-    <script src="https://cdn.jsdelivr.net/gh/mickidum/acc_toolbar/acctoolbar/acctoolbar.min.js"></script>
+    
 
     <!-- Iconify for cross-platform flag icons -->
     <script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script><style id="zappy-multilang-css">
@@ -1589,6 +2052,56 @@ html[dir="rtl"] body {
         right: 0;
       }
     </style>
+    <style id="zappy-critical-above-fold-css">
+html{box-sizing:border-box;-webkit-text-size-adjust:100%}*,*::before,*::after{box-sizing:inherit}body{margin:0;min-width:320px;overflow-x:clip}img,svg,video{max-width:100%;height:auto}main{display:block}.container{width:min(100% - 32px,1200px);margin-inline:auto}.navbar,nav.navbar,header .navbar,header[role="banner"]{position:relative;z-index:1000;width:100%}.nav-container,.navbar .container{display:flex;align-items:center;justify-content:space-between;min-height:64px}.logo,.logo-link img{display:block;width:35px;height:35px;object-fit:contain}.nav-menu,#navMenu{list-style:none;margin:0;padding:0}.navbar a,.nav-menu a,#navMenu a,.navbar .nav-links a{color:inherit;text-decoration:none}.navbar .sub-menu,.nav-menu .sub-menu,#navMenu .sub-menu{display:none}.fa,.fas,.far,.fab,.fa-solid,.fa-regular,.fa-brands{display:inline-block;min-width:1em;text-align:center}html:not(#zappy-noop)[data-zappy-site-type="ecommerce"] .phone-header-btn,html:not(#zappy-noop) .navbar:has(.nav-ecommerce-icons)>.phone-header-btn{display:none!important;visibility:hidden!important;width:0!important;height:0!important;pointer-events:none!important}.zappy-preview-empty-store-cta{display:none!important;visibility:hidden!important;height:0!important;max-height:0!important;overflow:hidden!important;margin:0!important;padding:0!important;border:0!important;box-shadow:none!important}.zappy-catalog-menu{background:var(--surface-color,var(--surface,linear-gradient(135deg,#f8f9fa 0%,#fff 100%)));border-bottom:1px solid var(--border-color,#e5e7eb);padding:0;position:sticky;top:0;z-index:90}.zappy-catalog-menu[dir=rtl],.zappy-catalog-menu.rtl{direction:rtl}.zappy-catalog-menu[dir=ltr],.zappy-catalog-menu.ltr{direction:ltr}.catalog-menu-container{max-width:1440px;margin:0 auto;display:flex;align-items:center;gap:8px;padding:10px 24px;overflow:visible}.catalog-menu-categories,.catalog-menu-list{display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin:0;padding:0;list-style:none}.catalog-menu-item{display:inline-flex;align-items:center;padding:8px 16px;font-size:14px;font-weight:500;color:var(--text-color,var(--text,#374151));text-decoration:none;border-radius:20px;white-space:nowrap}.catalog-menu-all{background:var(--primary-color,var(--primary,#111));color:var(--text-light,#fff)!important}.catalog-menu-parent{position:relative;display:inline-flex;align-items:center}.catalog-menu-trigger{display:inline-flex;align-items:center;gap:6px}.catalog-menu-chevron{flex-shrink:0}.catalog-menu-parent>.sub-menu{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important}.hero-section,.index-hero-section,section[class*="hero"]{position:relative;overflow:hidden}.hero-section,.index-hero-section{min-height:560px}section[data-hero-type*="fullscreen"]{min-height:100vh}.hero-bg-wrapper,.hero-bg-image,section[class*="hero"] [class*="hero-bg"]{position:absolute;inset:0;width:100%;height:100%}.hero-bg-wrapper img,.hero-bg-image img,section[class*="hero"] [data-hero-bg],section[class*="hero"] img[data-hero-background="true"]{width:100%!important;height:100%!important;object-fit:cover!important;display:block}.hero-content,section[class*="hero"] .container{position:relative;z-index:2}@media(max-width:768px){:root{--header-height:72px;--total-header-height:72px;--zappy-mobile-menu-top:72px}html[data-zappy-site-type="ecommerce"] body{padding-top:var(--total-header-height,72px)}html[data-zappy-site-type="ecommerce"] body>nav.navbar,html[data-zappy-site-type="ecommerce"] body>.navbar:not(.zappy-catalog-menu){position:fixed!important;top:0;left:0;right:0;z-index:100000;width:100%;margin-bottom:0}.zappy-catalog-menu{position:fixed;top:var(--header-height,72px);left:0;right:0;z-index:99999}.nav-container,.navbar .container{min-height:60px}.nav-menu,#navMenu{max-width:100vw;overflow-x:hidden}.hero-section,.index-hero-section,section[class*="hero"],section[data-hero-type*="fullscreen"]{min-height:100svh}.hero-bg-wrapper,.hero-bg-image,.hero-scrim{min-height:100svh}}
+:root{--nav-bg:#3D2358}.navbar{background-color:#3D2358!important}
+
+/* ZAPPY_ANNOUNCEMENT_HEADER_OFFSET_CSS_V3 */
+:root {
+  --zappy-header-stack-height: calc(var(--zappy-announcement-height, 40px) + var(--header-height, 72px));
+}
+body:has(.zappy-announcement-bar) nav.navbar:not(.zappy-catalog-menu),
+body:has(.zappy-announcement-bar) header.navbar,
+body:has(.zappy-announcement-bar) .navbar:not(.zappy-catalog-menu):not(.mobile-search-panel) {
+  top: var(--zappy-announcement-height, 40px) !important;
+}
+
+
+
+/* ZAPPY_CONTENT_ALIGNMENT_FIRST_PAINT_CSS_V1 */
+[data-zappy-content-align] {
+  display: flex !important;
+  flex-direction: column !important;
+}
+[data-zappy-content-align^="top-"] { justify-content: flex-start !important; }
+[data-zappy-content-align^="upper-"],
+[data-zappy-content-align^="center-"],
+[data-zappy-content-align^="lower-"] { justify-content: center !important; }
+[data-zappy-content-align^="bottom-"] { justify-content: flex-end !important; }
+[data-zappy-content-align$="-left"],
+[data-zappy-content-align$="-mid-left"] {
+  align-items: flex-start !important;
+  text-align: start !important;
+}
+[data-zappy-content-align$="-center"] {
+  align-items: center !important;
+  text-align: center !important;
+}
+[data-zappy-content-align$="-right"],
+[data-zappy-content-align$="-mid-right"] {
+  align-items: flex-end !important;
+  text-align: end !important;
+}
+[data-zappy-content-align] [data-zappy-align-target] {
+  margin-left: auto;
+  margin-right: auto;
+}
+[data-zappy-content-align$="-center"] [data-zappy-align-target],
+[data-zappy-content-align$="-center"] [data-zappy-align-target] > * {
+  text-align: center !important;
+}
+
+</style>
     <link rel="stylesheet" href="/styles.css">
     <script>window.ZAPPY_WEBSITE_ID = "b3dfd1cd-2b3d-4bf9-b0fd-42ff4743e0c2"; window.ZAPPY_API_BASE = "https://api.zappy5.com";</script>
 
@@ -1633,10 +2146,10 @@ html[dir="rtl"] body {
 <a class="skip-link" href="#main" data-i18n="contact_link_62">דלג לתוכן הראשי</a>
   <nav class="navbar">
   <button class="mobile-toggle" id="mobileToggle" aria-label="Menu" data-i18n-aria-label="home_aria_label_103">
-    <svg class="hamburger-icon" width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <svg style="display:block !important" class="hamburger-icon" width="24" height="24" viewBox="0 0 24 24" fill="none">
       <path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
     </svg>
-    <svg class="close-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" style="display: none;">
+    <svg class="close-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" style="display:none !important">
       <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
     </svg>
   </button>
@@ -1649,7 +2162,7 @@ html[dir="rtl"] body {
 
   <div class="nav-container">
     <div class="nav-right-group"><div class="nav-brand">
-      <a href="/" class="logo-link"><img class="logo" src="/assets/spiritual-coaching-kabbalah-logo-1781197334035-p2o580.webp?v=1781197334418-cqe2oj" alt="דיאנה אזולאי תקשור יהודי קבלי" data-i18n-alt="home_alt_100"></a>
+      <a href="/" class="logo-link"><img class="logo" src="/assets/spiritual-coaching-kabbalah-logo-1781197334035-p2o580.webp?v=1781197334418-cqe2oj" alt="דיאנה אזולאי תקשור יהודי קבלי" data-i18n-alt="home_alt_100" decoding="async" width="35" height="35"></a>
     </div><ul class="nav-menu" id="navMenu"><li><a href="/about" data-i18n="home_nav_97">אודות</a></li><li><a href="/services" data-i18n="home_nav_96">שירותים</a><ul class="sub-menu"><li><a href="/personal-guidance-meeting" class="" data-i18n="new_a_210">פגישת דיוק והכוונה אישית</a></li><li><a href="/services/four-session-process" class="nav-link">4 פגישות</a></li></ul></li><li><a href="/blog" data-i18n="home_nav_98">בלוג</a></li><li class="nav-cta-item-mobile"><a href="/contact" data-i18n="home_nav_99">צור קשר</a></li><li><a href="/questions-and-answers" class="" data-i18n="new_a_225">שאלות ותשובות</a></li></ul></div>
 
     
@@ -1660,7 +2173,7 @@ html[dir="rtl"] body {
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0;" data-no-icon-edit="true"><path d="M12.039,.002s0,0,0,0c-.013,0-.026-.002-.039-.002-.005,0-.009,0-.014,0-.002,0-.003,0-.005,0C5.373,.011,0,5.39,0,12s5.383,12,12,12,12-5.383,12-12S18.638,.023,12.039,.002Zm9.747,6.998h-4.814c-1.067-2.669-2.712-4.781-3.731-5.925,3.734,.421,6.901,2.719,8.546,5.925Zm-4.786,5c0,1.407-.292,2.753-.731,4H7.731c-.439-1.247-.731-2.593-.731-4s.292-2.754,.73-4h8.539c.439,1.247,.731,2.593,.731,4Zm-1.122,5c-1.229,2.838-3.116,4.99-3.878,5.788-.762-.798-2.649-2.95-3.878-5.788h7.755ZM8.121,7c1.229-2.841,3.117-4.992,3.879-5.789,.762,.798,2.649,2.95,3.878,5.789h-7.757ZM10.757,1.075c-1.025,1.15-2.668,3.264-3.73,5.925H2.214C3.859,3.795,7.024,1.498,10.757,1.075ZM1.764,8H6.668c-.403,1.247-.668,2.589-.668,4s.265,2.752,.669,4H1.764c-.487-1.242-.764-2.588-.764-4s.277-2.758,.764-4Zm.45,9H7.029c1.067,2.669,2.712,4.781,3.731,5.925-3.734-.421-6.901-2.719-8.546-5.925Zm11.026,5.925c1.019-1.144,2.664-3.257,3.731-5.925h4.814c-1.645,3.206-4.812,5.504-8.546,5.925Zm8.996-6.925h-4.905c.404-1.248,.669-2.589,.669-4s-.265-2.752-.669-4h4.905c.487,1.242,.764,2.588,.764,4s-.277,2.758-.764,4Z"></path></svg>
   </button>
   <div class="lang-switcher-dropdown" role="menu" style="position:absolute;top:100%;right:0;margin-top:4px;min-width:140px;background:white;border:1px solid rgba(128,128,128,0.2);border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);opacity:0;visibility:hidden;transform:translateY(-8px);transition:all 0.2s ease;z-index:1001;">
-    <button class="lang-option" data-lang="en" style="display:flex;align-items:center;gap:8px;width:100%;padding:10px 14px;background:none;border:none;text-align:left;cursor:pointer;font-size:14px;color:#333;"><img src="https://api.iconify.design/circle-flags/us.svg" width="20" height="20" alt="" style="display:inline-block;vertical-align:middle;border-radius:50%;"> English</button>
+    <button class="lang-option" data-lang="en" style="display:flex;align-items:center;gap:8px;width:100%;padding:10px 14px;background:none;border:none;text-align:left;cursor:pointer;font-size:14px;color:#333;"><img src="https://api.iconify.design/circle-flags/us.svg" width="20" height="20" alt="" style="display:inline-block;vertical-align:middle;border-radius:50%;" decoding="async"> English</button>
   </div>
 </div>
 <script data-no-icon-edit="true">(function(){function f(){var b=document.querySelector('.lang-switcher-current');if(!b)return;var n=b.closest('nav')||b.closest('header')||b.closest('.navbar');if(!n)return;var a=n.querySelector('.nav-menu a,.nav-links a');if(!a)a=n.querySelector('a:not(.lang-option):not(.lang-switcher-current):not([class*="logo"])');if(a){var c=getComputedStyle(a).color;if(c&&c!=='rgb(0, 0, 0)'&&c!=='rgba(0, 0, 0, 0)'){b.style.color=c;return;}}var s=getComputedStyle(n).backgroundColor;if(s&&s!=='rgba(0, 0, 0, 0)'&&s!=='transparent'){var m=s.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/);if(m){var l=(0.299*parseInt(m[1])+0.587*parseInt(m[2])+0.114*parseInt(m[3]))/255;b.style.color=l>0.5?'#1a1a1a':'#F3FAFF';}}}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',f);}else{setTimeout(f,0);}})()</script><div class="nav-cta-container">
@@ -2634,7 +3147,7 @@ html[dir="rtl"] body {
       <!-- Column 1: Company Info -->
       <div class="footer-col footer-brand">
         <a href="/" class="footer-logo-link" aria-label="עמוד הבית של דיאנה אזולאי תקשור יהודי קבלי" data-i18n-aria-label="home_aria_label_105">
-          <img src="/assets/spiritual-coaching-kabbalah-logo.webp" alt="דיאנה אזולאי תקשור יהודי קבלי" class="logo" data-i18n-alt="home_alt_102">
+          <img src="/assets/spiritual-coaching-kabbalah-logo.webp" alt="דיאנה אזולאי תקשור יהודי קבלי" class="logo" data-i18n-alt="home_alt_102" decoding="async" width="35" height="35">
         </a>
         <p class="footer-tagline" data-i18n="home_p_36">ליווי רוחני מעמיק דרך חכמת הקבלה — מסע אל תוך הנשמה, לגילוי האור שבך ולחיים של שלמות ומשמעות אמיתית.</p>
         <div class="footer-social" aria-label="רשתות חברתיות" data-i18n-aria-label="home_aria_label_106">
@@ -2803,6 +3316,7 @@ html[dir="rtl"] body {
   const resources = {
   "he": {
     "translation": {
+      "ecom_enterQuantities": "הזינו כמויות",
       "ecom_loading": "טוען…",
       "ecom_accountWelcome": "ברוך הבא",
       "ecom_addAddress": "הוסף כתובת",
@@ -2821,8 +3335,24 @@ html[dir="rtl"] body {
       "ecom_apartmentExt": "דירה, קומה, קוד בניין, הערות וכו'",
       "ecom_applyCoupon": "החל",
       "ecom_backToProducts": "חזרה למוצרים",
+      "ecom_bookNow": "הזמינו עכשיו",
+      "ecom_bookingChooseDate": "בחרו תאריך",
+      "ecom_bookingChooseTime": "בחרו שעה",
+      "ecom_bookingDate": "תאריך",
+      "ecom_bookingLoading": "טוען זמינות…",
+      "ecom_bookingNoDates": "אין תאריכים פנויים כרגע",
+      "ecom_bookingNoSlots": "אין זמנים פנויים כרגע",
+      "ecom_bookingRemaining": "נותרו {count}",
+      "ecom_bookingSelectOption": "בחירה",
+      "ecom_bookingSelectTime": "בחרו שעה",
+      "ecom_bookingSelectDateFirst": "אנא בחרו תאריך תחילה",
+      "ecom_bookingSelectTimeFirst": "אנא בחרו תאריך ושעה תחילה",
+      "ecom_bookingCompleteFormFirst": "אנא מלאו את שדות ההזמנה הנדרשים",
+      "ecom_bookingTime": "שעה",
       "ecom_browseFavorites": "גלו את כל המוצרים שלנו",
       "ecom_bundleDiscount": "הנחת חבילה",
+      "ecom_seasonalDiscount": "הנחה עונתית",
+      "ecom_customerDiscount": "הנחת לקוח",
       "ecom_bundleTotal": "סה\"כ לעגלה",
       "ecom_callNow": "התקשר עכשיו",
       "ecom_cancel": "ביטול",
@@ -2933,6 +3463,8 @@ html[dir="rtl"] body {
       "ecom_haveCouponCode": "יש לי קוד קופון",
       "ecom_home": "דף הבית",
       "ecom_inStock": "במלאי",
+      "ecom_onlyOneLeft": "נותר פריט אחד בלבד",
+      "ecom_onlyXLeft": "נותרו רק {count} במלאי",
       "ecom_inquiryAbout": "פנייה בנושא",
       "ecom_invalidCoupon": "קוד קופון לא תקין",
       "ecom_items": "פריטים",
@@ -2961,6 +3493,10 @@ html[dir="rtl"] body {
       "ecom_noFeaturedProducts": "עוד לא נבחרו מוצרים מומלצים. צפו בכל המוצרים שלנו!",
       "ecom_noOrders": "אין עדיין הזמנות",
       "ecom_noProducts": "אין מוצרים להצגה כרגע",
+      "ecom_previewEmptyStoreTitle": "החנות שלך מוכנה למוצרים",
+      "ecom_previewEmptyStoreBody": "הוסף את המוצר הראשון במנהל החנות כדי לראות אותו מופיע כאן.",
+      "ecom_previewEmptyStoreButton": "הוסף מוצרים",
+      "ecom_previewOnlyBadge": "תצוגה מקדימה בלבד",
       "ecom_noShippingMethods": "אין אפשרויות משלוח זמינות",
       "ecom_notLoggedIn": "לא מחובר",
       "ecom_orderConfirmation": "אישור הזמנה נשלח לאימייל שלך",
@@ -3006,6 +3542,7 @@ html[dir="rtl"] body {
       "ecom_saveToFavorites": "שמור למועדפים",
       "ecom_saving": "שומר...",
       "ecom_searchProducts": "חיפוש מוצרים",
+      "ecom_searchResults": "תוצאות חיפוש",
       "ecom_selectVariant": "בחר אפשרות",
       "ecom_sendCode": "שלח קוד",
       "ecom_sendInquiry": "שלח פנייה",
@@ -3015,6 +3552,7 @@ html[dir="rtl"] body {
       "ecom_shippingAddress": "כתובת למשלוח",
       "ecom_shippingMethod": "שיטת משלוח",
       "ecom_shippingRequired": "נא לבחור שיטת משלוח",
+      "ecom_pickup": "איסוף",
       "ecom_signInHere": "התחבר כאן",
       "ecom_size": "גודל",
       "ecom_sku": "מק\"ט",
@@ -3059,8 +3597,15 @@ html[dir="rtl"] body {
       "ecom_coursesEnrollmentCheckFailed": "לא ניתן לאמת בעלות על הקורס. אנא נסה שוב.",
       "ecom_coursesAlreadyEnrolledPrompt": "כבר נרשמת?",
       "ecom_coursesLoginLink": "לכניסה",
+      "ecom_yourCourse": "הקורס שלך",
+      "ecom_courseAccessMethod": "גישה דיגיטלית מקוונת",
       "ecom_processing": "מעבד...",
       "ecom_checkoutFailed": "שגיאה בתהליך התשלום. נסו שוב.",
+      "ecom_formFileUploading": "מעלה…",
+      "ecom_formFileTooLarge": "הקובץ גדול מדי (עד {size} MB)",
+      "ecom_formFileUnsupported": "סוג הקובץ אינו נתמך",
+      "ecom_formFileFailed": "ההעלאה נכשלה. נסו שוב.",
+      "ecom_formFileRemove": "הסרת הקובץ",
       "nav-home": "בית",
       "blog_h1_1": "היומן הרוחני",
       "blog_h2_2": "כשהנשמה מדברת — איך ללמוד לסמוך על העיתוי האלוהי",
@@ -3095,7 +3640,7 @@ html[dir="rtl"] body {
       "blog_p_42": "או עקבי אחריי ברשתות החברתיות לתכנים יומיומיים מהנשמה",
       "blog_p_43": "ליווי רוחני מעמיק דרך חכמת הקבלה — מסע אל תוך הנשמה, לגילוי האור שבך ולחיים של שלמות ומשמעות אמיתית.",
       "blog_p_44": "© 2026 דיאנה אזולאי תקשור יהודי קבלי. כל הזכויות שמורות.",
-      "home_h1_1": "דיוק הנתיב מתוך הנשמה",
+      "home_h1_1": "דיאנה אזולאי",
       "home_h2_2": "השירותים שלי",
       "home_h2_3": "מלווה נשים בדרך אל עצמן",
       "home_h2_4": "מה אומרות הנשים שעברו את המסע",
@@ -3134,6 +3679,7 @@ html[dir="rtl"] body {
       "new_a_277": "4 פגישות",
       "new_a_307": "צרי קשר עכשיו",
       "new_a_308": "חזרי לשירותים",
+      "new_a_309": "לחץ כאן",
       "new_p_171": "הצטרפו לאלפי לקוחות מרוצים. התחילו את המסע שלכם היום.",
       "new_p_174": "טקסט כאן",
       "new_p_175": "טקסט כאן",
@@ -4175,8 +4721,24 @@ html[dir="rtl"] body {
       "ecom_apartmentExt": "Apt, Floor, Building Code, Notes, Etc.",
       "ecom_applyCoupon": "Apply",
       "ecom_backToProducts": "Back to Products",
+      "ecom_bookNow": "Book now",
+      "ecom_bookingChooseDate": "Choose a date",
+      "ecom_bookingChooseTime": "Choose a time",
+      "ecom_bookingDate": "Date",
+      "ecom_bookingLoading": "Loading availability…",
+      "ecom_bookingNoDates": "No available dates right now",
+      "ecom_bookingNoSlots": "No available times right now",
+      "ecom_bookingRemaining": "{count} left",
+      "ecom_bookingSelectOption": "Select",
+      "ecom_bookingSelectTime": "Select a time",
+      "ecom_bookingSelectDateFirst": "Please choose a date first",
+      "ecom_bookingSelectTimeFirst": "Please choose a date and time first",
+      "ecom_bookingCompleteFormFirst": "Please fill in the required booking fields",
+      "ecom_bookingTime": "Time",
       "ecom_browseFavorites": "Discover all our products",
       "ecom_bundleDiscount": "Bundle Discount",
+      "ecom_seasonalDiscount": "Seasonal Discount",
+      "ecom_customerDiscount": "Customer Discount",
       "ecom_bundleTotal": "Bundle total",
       "ecom_callNow": "Call Now",
       "ecom_cancel": "Cancel",
@@ -4275,6 +4837,7 @@ html[dir="rtl"] body {
       "ecom_enterCode": "Enter the code sent to your email",
       "ecom_enterCouponCode": "Enter coupon code",
       "ecom_enterEmail": "Enter your email and we'll send you a login code",
+      "ecom_enterQuantities": "Enter quantities",
       "ecom_errorLoading": "Error loading options",
       "ecom_featured": "Featured",
       "ecom_featuredCategories": "Shop by Category",
@@ -4287,6 +4850,8 @@ html[dir="rtl"] body {
       "ecom_haveCouponCode": "I have a coupon code",
       "ecom_home": "Home",
       "ecom_inStock": "In Stock",
+      "ecom_onlyOneLeft": "Only 1 left in stock",
+      "ecom_onlyXLeft": "Only {count} left in stock",
       "ecom_inquiryAbout": "Inquiry about",
       "ecom_invalidCoupon": "Invalid coupon code",
       "ecom_items": "Items",
@@ -4315,6 +4880,10 @@ html[dir="rtl"] body {
       "ecom_noFeaturedProducts": "No featured products yet. Check out all our products!",
       "ecom_noOrders": "No orders yet",
       "ecom_noProducts": "No products to display",
+      "ecom_previewEmptyStoreTitle": "Your store is ready for products",
+      "ecom_previewEmptyStoreBody": "Add your first product in Store Manager to see it appear here.",
+      "ecom_previewEmptyStoreButton": "Add products",
+      "ecom_previewOnlyBadge": "Preview only",
       "ecom_noShippingMethods": "No shipping options available",
       "ecom_notLoggedIn": "Not Logged In",
       "ecom_orderConfirmation": "A confirmation email has been sent to you",
@@ -4360,6 +4929,7 @@ html[dir="rtl"] body {
       "ecom_saveToFavorites": "Save to Favorites",
       "ecom_saving": "Saving...",
       "ecom_searchProducts": "Search products",
+      "ecom_searchResults": "Search results",
       "ecom_selectVariant": "Select option",
       "ecom_sendCode": "Send Code",
       "ecom_sendInquiry": "Send Inquiry",
@@ -4369,6 +4939,7 @@ html[dir="rtl"] body {
       "ecom_shippingAddress": "Shipping Address",
       "ecom_shippingMethod": "Shipping Method",
       "ecom_shippingRequired": "Please select a shipping method",
+      "ecom_pickup": "Pickup",
       "ecom_signInHere": "Sign in here",
       "ecom_size": "Size",
       "ecom_sku": "SKU",
@@ -4413,8 +4984,15 @@ html[dir="rtl"] body {
       "ecom_coursesEnrollmentCheckFailed": "Could not verify course ownership. Please try again.",
       "ecom_coursesAlreadyEnrolledPrompt": "Already enrolled?",
       "ecom_coursesLoginLink": "Log in",
+      "ecom_yourCourse": "your course",
+      "ecom_courseAccessMethod": "Online course access",
       "ecom_processing": "Processing...",
       "ecom_checkoutFailed": "Checkout failed. Please try again.",
+      "ecom_formFileUploading": "Uploading…",
+      "ecom_formFileTooLarge": "File is too large (max {size} MB)",
+      "ecom_formFileUnsupported": "This file type is not supported",
+      "ecom_formFileFailed": "Upload failed. Please try again.",
+      "ecom_formFileRemove": "Remove file",
       "nav-home": "Home",
       "blog_h1_1": "The Spiritual Journal",
       "blog_h2_2": "When the Soul Speaks — How to Learn to Trust Divine Timing",
@@ -4449,7 +5027,7 @@ html[dir="rtl"] body {
       "blog_p_42": "Or follow me on social media for daily content from the soul",
       "blog_p_43": "Deep spiritual guidance through Kabbalah wisdom — a journey into the soul, to discover the light within you and to a life of wholeness and true meaning.",
       "blog_p_44": "© 2026 Diana Azulay Jewish Kabbalistic Communication. All rights reserved.",
-      "home_h1_1": "Precision of the Path from Within the Soul",
+      "home_h1_1": "Diana Azulay",
       "home_h2_2": "My Services",
       "home_h2_3": "Guiding Women on Their Journey to Themselves",
       "home_h2_4": "What Women Who Completed the Journey Say",
@@ -4488,6 +5066,7 @@ html[dir="rtl"] body {
       "new_a_277": "4 Sessions",
       "new_a_307": "Contact Now",
       "new_a_308": "Return to Services",
+      "new_a_309": "Click here",
       "new_p_171": "Join thousands of satisfied clients. Start your journey today.",
       "new_p_174": "Text here",
       "new_p_175": "Text here",
@@ -5525,8 +6104,11 @@ html[dir="rtl"] body {
   // and stored preference must NOT win over it (or visiting /en/... while
   // localStorage holds 'he' from a previous Hebrew session keeps the cart
   // drawer / product detail / checkout strings rendering in Hebrew).
-  // Stored preference is only consulted when no URL signal exists, falling
-  // back to the site default last.
+  // When the URL has no language signal (typical preview default page), the
+  // server-rendered html[lang] MUST beat localStorage — a prior English
+  // session leaves zappy_lang='en', which made detectLanguage() report 'en'
+  // on a Hebrew page and caused navigateToLanguage('en') to no-op (English
+  // option "not clickable" on home).
   function detectLanguage() {
     try {
       var pathLang = (window.location.pathname.match(/^\/([a-z]{2})(?:\/|$)/i) || [])[1];
@@ -5542,9 +6124,45 @@ html[dir="rtl"] body {
         return resolvedQueryLang;
       }
     } catch (e) {}
+    try {
+      var htmlLang = (document.documentElement.getAttribute('lang') || '').split('-')[0].toLowerCase();
+      if (htmlLang && availableLanguages.includes(htmlLang)) {
+        try { localStorage.setItem('zappy_lang', htmlLang); } catch (e2) {}
+        return htmlLang;
+      }
+    } catch (e3) {}
     var stored = localStorage.getItem('zappy_lang');
     if (stored && availableLanguages.includes(stored)) return stored;
     return 'he';
+  }
+
+  // True when the current URL already represents targetLang (query/path),
+  // independent of the in-memory zappyI18n.language which can drift via
+  // stale localStorage. Must mirror detectLanguage's URL signals — including
+  // ?lang= on published courses/dynamic routes — or navigateToLanguage(default)
+  // no-ops while a non-default ?lang= remains.
+  function isLanguageActiveInUrl(targetLang) {
+    try {
+      var path = window.location.pathname || '/';
+      if (path.indexOf('/api/website/preview') === 0) {
+        var q = new URLSearchParams(window.location.search).get('lang');
+        var effective = (q && availableLanguages.includes(String(q).toLowerCase()))
+          ? String(q).toLowerCase()
+          : 'he';
+        return effective === targetLang;
+      }
+      var pathLang = (path.match(/^\/([a-z]{2})(?=\/|$)/i) || [])[1];
+      if (pathLang && availableLanguages.includes(pathLang.toLowerCase())) {
+        return pathLang.toLowerCase() === targetLang;
+      }
+      var queryLang = new URLSearchParams(window.location.search).get('lang');
+      if (queryLang && availableLanguages.includes(String(queryLang).toLowerCase())) {
+        return String(queryLang).toLowerCase() === targetLang;
+      }
+      return targetLang === 'he';
+    } catch (e) {
+      return false;
+    }
   }
 
   // Build the URL for a target language and navigate. The URL pattern mirrors
@@ -5561,7 +6179,13 @@ html[dir="rtl"] body {
   // page reloads in the same language the user just picked.
   function navigateToLanguage(targetLang) {
     if (!targetLang || !availableLanguages.includes(targetLang)) return;
-    if (targetLang === zappyI18n.language) return;
+    // Gate on the URL, NOT zappyI18n.language — stale localStorage can make
+    // language==='en' while the page is still Hebrew (no ?lang=), which used
+    // to early-return and leave the English option appearing unclickable.
+    if (isLanguageActiveInUrl(targetLang)) {
+      zappyI18n.language = targetLang;
+      return;
+    }
     try { localStorage.setItem('zappy_lang', targetLang); } catch (e) {}
 
     var path = window.location.pathname || '/';
@@ -5699,6 +6323,9 @@ html[dir="rtl"] body {
       var key = el.getAttribute('data-i18n');
       var translation = zappyI18n.t(key);
       if (!translation || translation === key) return;
+      translation = String(translation)
+        .replace(/&nbsp;/gi, String.fromCharCode(160))
+        .replace(/&nbsp;/gi, String.fromCharCode(160));
 
       // Skip parent elements whose children have their own data-i18n keys
       // (e.g., <li data-i18n="key1"><a data-i18n="key2">text</a></li>)
@@ -5775,16 +6402,32 @@ html[dir="rtl"] body {
         }
       }
 
-      // Carry over inline formatting from the source element when the translation
-      // is plain text. E.g., source: <font color="#fff">Hebrew</font>,
-      // translation: "English" → wrap as <font color="#fff">English</font>.
+      // Carry over a single inline colour/format wrapper from the source element
+      // when the translation is plain text. The inline-editor colour picker wraps
+      // the selected text in <span style="color:#hex !important"> (legacy edits
+      // used <font color>). Without re-applying that wrapper, the
+      // textContent/innerHTML swap below destroys it and the user's picked text
+      // colour silently reverts to the CSS default on every load / language
+      // switch (the edit IS saved in the HTML — it's just re-rendered away here).
+      var wrappedFormatting = false;
       var fontChild = el.querySelector('font[color], font[face], font[size]');
-      if (fontChild && !inlineFormatPattern.test(translation)) {
-        var fontTag = '<font';
-        for (var ai = 0; ai < fontChild.attributes.length; ai++) {
-          fontTag += ' ' + fontChild.attributes[ai].name + '="' + fontChild.attributes[ai].value.replace(/"/g, '&quot;') + '"';
+      var styleWrapper = fontChild;
+      if (!styleWrapper && el.children.length === 1) {
+        var onlyChild = el.children[0];
+        if (onlyChild && onlyChild.tagName === 'SPAN' &&
+            /(^|;)\s*(color|background|background-color)\s*:/i.test(onlyChild.getAttribute('style') || '') &&
+            onlyChild.textContent.trim() === (el.textContent || '').trim()) {
+          styleWrapper = onlyChild;
         }
-        translation = fontTag + '>' + translation + '</font>';
+      }
+      if (styleWrapper && !inlineFormatPattern.test(translation) && !structuralTagPattern.test(translation)) {
+        var wrapperTag = styleWrapper.tagName.toLowerCase();
+        var openTag = '<' + wrapperTag;
+        for (var ai = 0; ai < styleWrapper.attributes.length; ai++) {
+          openTag += ' ' + styleWrapper.attributes[ai].name + '="' + styleWrapper.attributes[ai].value.replace(/"/g, '&quot;') + '"';
+        }
+        translation = openTag + '>' + translation + '</' + wrapperTag + '>';
+        wrappedFormatting = true;
       }
 
       var hasNewlines = translation.indexOf(newlineChar) !== -1;
@@ -5792,7 +6435,7 @@ html[dir="rtl"] body {
       var hasEntities = /&[a-zA-Z]+;|&#\d+;|&#x[0-9a-fA-F]+;/.test(translation);
       var elementHasBr = /<br\s*\/?>/i.test(el.innerHTML);
 
-      if (hasNewlines || hasInlineFormat || hasEntities || elementHasBr) {
+      if (hasNewlines || hasInlineFormat || hasEntities || elementHasBr || wrappedFormatting) {
         el.innerHTML = translation.split(newlineChar).join('<br>');
       } else {
         el.textContent = translation;
@@ -6076,18 +6719,19 @@ html[dir="rtl"] body {
       el.style.removeProperty('margin-right');
     });
     
-    // CRITICAL FIX FOR E-COMMERCE SITES: Move lang-switcher inside nav-icons-left
-    // E-commerce sites have a nav-icons-left container with search box.
-    // For RTL: lang-switcher should appear to the RIGHT of search box
-    // For LTR: lang-switcher should appear to the LEFT of search box
+      // CRITICAL FIX FOR E-COMMERCE SITES: Move lang-switcher inside nav-icons-left
+    // immediately AFTER the search box. Flex order CSS (search=1, lang=2,
+    // login=3, cart=4) keeps the globe to the right of search in LTR and
+    // mirrored correctly in RTL — inserting BEFORE search + order:0 left the
+    // globe as the outermost icon. Also reorder when already inside but before search.
     document.querySelectorAll('.lang-switcher').forEach(function(el) {
-      var navIconsLeft = document.querySelector('.nav-icons-left');
+      var navIconsLeft = document.querySelector('.nav-icons-left') || document.querySelector('.nav-ecommerce-icons');
       var searchBox = document.querySelector('.nav-search-box');
-      
-      // Only move if not already inside nav-icons-left and the elements exist
-      if (navIconsLeft && searchBox && !el.closest('.nav-icons-left')) {
-        // Insert before search box - in RTL this visually appears to the RIGHT
-        navIconsLeft.insertBefore(el, searchBox);
+      if (!navIconsLeft || !searchBox || searchBox.parentNode !== navIconsLeft) return;
+      var inside = el.closest('.nav-icons-left') || el.closest('.nav-ecommerce-icons');
+      var beforeSearch = !!(searchBox.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_PRECEDING);
+      if (!inside || beforeSearch) {
+        navIconsLeft.insertBefore(el, searchBox.nextSibling);
       }
     });
     
@@ -6152,6 +6796,22 @@ html[dir="rtl"] body {
           var hrefAttr = this.getAttribute('href');
           if (this.tagName === 'A' && hrefAttr && hrefAttr !== '#') {
             e.stopPropagation();
+            // Preview iframe cannot follow /en/... hrefs (404s on the API
+            // host). Convert to ?lang= via navigateToLanguage instead.
+            var previewPath = window.location.pathname || '/';
+            if (previewPath.indexOf('/api/website/preview') === 0) {
+              e.preventDefault();
+              var hrefLang = langAttr;
+              if (!hrefLang) {
+                var hm = (hrefAttr.match(/^\/([a-z]{2})(?:\/|$)/i) || [])[1];
+                if (hm) hrefLang = hm.toLowerCase();
+              }
+              if (hrefLang) navigateToLanguage(hrefLang);
+              dropdown.style.opacity = '0';
+              dropdown.style.visibility = 'hidden';
+              dropdown.style.transform = 'translateY(-8px)';
+              return;
+            }
             try { if (langAttr) localStorage.setItem('zappy_lang', langAttr); } catch (_) {}
             dropdown.style.opacity = '0';
             dropdown.style.visibility = 'hidden';
@@ -6241,6 +6901,22 @@ html[dir="rtl"] body {
           var hrefAttr = this.getAttribute('href');
           if (this.tagName === 'A' && hrefAttr && hrefAttr !== '#') {
             e.stopPropagation();
+            // Preview iframe cannot follow /en/... hrefs (404s on the API
+            // host). Convert to ?lang= via navigateToLanguage instead.
+            var previewPath = window.location.pathname || '/';
+            if (previewPath.indexOf('/api/website/preview') === 0) {
+              e.preventDefault();
+              var hrefLang = langAttr;
+              if (!hrefLang) {
+                var hm = (hrefAttr.match(/^\/([a-z]{2})(?:\/|$)/i) || [])[1];
+                if (hm) hrefLang = hm.toLowerCase();
+              }
+              if (hrefLang) navigateToLanguage(hrefLang);
+              dropdown.style.opacity = '0';
+              dropdown.style.visibility = 'hidden';
+              dropdown.style.transform = 'translateY(-8px)';
+              return;
+            }
             try { if (langAttr) localStorage.setItem('zappy_lang', langAttr); } catch (_) {}
             dropdown.style.opacity = '0';
             dropdown.style.visibility = 'hidden';
@@ -6282,15 +6958,18 @@ html[dir="rtl"] body {
       '.nav-icons-left .lang-switcher, .nav-ecommerce-icons .lang-switcher { display: none !important; }' +
       '.zappy-lang-switcher-container { display: none !important; }' +
       '.mobile-lang-menu { list-style: none !important; width: 100%; border-top: 1px solid rgba(128,128,128,0.2); margin-top: 8px; padding-top: 8px; }' +
-      '.mobile-lang-toggle { display: flex; align-items: center; gap: 10px; width: 100%; padding: 12px 16px; background: none; border: none; cursor: pointer; color: inherit; font-size: 15px; font-family: inherit; }' +
-      '.mobile-lang-toggle span { flex: 1; }' +
+      /* color:inherit was invisible on dark mobile menus — nav <a> links get an
+         explicit color via navbarCssHelper but these <button> rows did not. */
+      '.mobile-lang-toggle { display: flex; align-items: center; gap: 10px; width: 100%; padding: 12px 16px; background: none; border: none; cursor: pointer; color: var(--nav-text, var(--text-color, inherit)); font-size: 15px; font-family: inherit; }' +
+      '.mobile-lang-toggle span { flex: 1; color: inherit; }' +
+      '.mobile-lang-toggle svg { color: inherit; fill: currentColor; }' +
       'html[dir="rtl"] .mobile-lang-toggle span, html[lang="he"] .mobile-lang-toggle span, html[lang="ar"] .mobile-lang-toggle span { text-align: right; }' +
       'html:not([dir="rtl"]) .mobile-lang-toggle span { text-align: left; }' +
-      '.mobile-lang-chevron { transition: transform 0.3s ease; flex-shrink: 0; }' +
+      '.mobile-lang-chevron { transition: transform 0.3s ease; flex-shrink: 0; stroke: currentColor; }' +
       '.mobile-lang-options { display: none; flex-direction: column; padding: 0 16px 8px 46px; }' +
       'html[dir="rtl"] .mobile-lang-options, html[lang="he"] .mobile-lang-options, html[lang="ar"] .mobile-lang-options { padding: 0 46px 8px 16px; }' +
       '.mobile-lang-options.open { display: flex; }' +
-      '.mobile-lang-option { display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: none; border: none; cursor: pointer; color: inherit; font-size: 14px; font-family: inherit; border-radius: 6px; transition: background-color 0.2s; width: 100%; }' +
+      '.mobile-lang-option { display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: none; border: none; cursor: pointer; color: var(--nav-text, var(--text-color, inherit)); font-size: 14px; font-family: inherit; border-radius: 6px; transition: background-color 0.2s; width: 100%; }' +
       'html[dir="rtl"] .mobile-lang-option, html[lang="he"] .mobile-lang-option, html[lang="ar"] .mobile-lang-option { text-align: right; }' +
       'html:not([dir="rtl"]) .mobile-lang-option { text-align: left; }' +
       '.mobile-lang-option:hover { background: rgba(128,128,128,0.1); }' +
@@ -6309,8 +6988,8 @@ html[dir="rtl"] body {
     var navMenu = document.getElementById('navMenu') || document.querySelector('.nav-menu');
     if (!navMenu) return;
     
-    var currentLang = zappyI18n.language;
-    var currentInfo = languageInfo[currentLang] || { nativeName: currentLang, flagImg: '' };
+    var currentLang = (zappyI18n.language || '').split('-')[0].toLowerCase();
+    var currentInfo = languageInfo[currentLang] || languageInfo[zappyI18n.language] || { nativeName: currentLang || 'Language', flagImg: '' };
     
     var optionsHtml = availableLanguages
       .filter(function(lang) { return lang !== currentLang; })
@@ -6385,8 +7064,8 @@ html[dir="rtl"] body {
       return;
     }
     
-    var currentLang = zappyI18n.language;
-    var currentInfo = languageInfo[currentLang] || { nativeName: currentLang };
+    var currentLang = (zappyI18n.language || '').split('-')[0].toLowerCase();
+    var currentInfo = languageInfo[currentLang] || languageInfo[zappyI18n.language] || { nativeName: currentLang || 'Language' };
     
     var toggleSpan = menuItem.querySelector('.mobile-lang-toggle span');
     if (toggleSpan) toggleSpan.textContent = currentInfo.nativeName;
@@ -6464,77 +7143,47 @@ html[dir="rtl"] body {
   
   // ============================================
   // LANGUAGE SWITCHER ICON COLOR DETECTION
-  // Dynamically detect if navbar has light/dark background
-  // and set the globe icon color accordingly
+  // (shared source — see getFixLanguageSwitcherColorSource)
   // ============================================
+  // Keep Search → Globe → Login → Cart even when site CSS predates the order fix.
+  (function ensureLangSwitcherOrderCss() {
+    if (document.getElementById('zappy-lang-switcher-order-css')) return;
+    var s = document.createElement('style');
+    s.id = 'zappy-lang-switcher-order-css';
+    s.textContent = '@media (min-width:769px){.nav-ecommerce-icons .nav-search-box{order:1!important}.nav-ecommerce-icons .lang-switcher{order:2!important}.nav-ecommerce-icons .login-link.nav-login{order:3!important}.nav-ecommerce-icons .cart-link.nav-cart{order:4!important}}';
+    (document.head || document.documentElement).appendChild(s);
+  })();
+
   function fixLanguageSwitcherColor() {
+    /* ZAPPY_LANG_SWITCHER_COLOR_FIX_V4 */
     var switcher = document.querySelector('.lang-switcher-current');
     var svg = switcher ? switcher.querySelector('svg') : null;
     if (!switcher || !svg) return;
-    
-    // Find the navbar or header element
-    var navbar = document.querySelector('.navbar') || 
-                 document.querySelector('nav') || 
+
+    var navbar = document.querySelector('.navbar') ||
+                 document.querySelector('nav') ||
                  document.querySelector('header');
     if (!navbar) return;
-    
-    // Get the effective background color by walking up the DOM tree
-    function getEffectiveBackgroundColor(element) {
-      var el = element;
-      var maxDepth = 10; // Prevent infinite loops
-      
-      while (el && maxDepth > 0) {
-        var style = window.getComputedStyle(el);
-        var bg = style.backgroundColor;
-        
-        // Skip transparent backgrounds
-        if (bg && bg !== 'transparent' && bg !== 'rgba(0, 0, 0, 0)') {
-          return bg;
-        }
-        
-        // Check background-image for gradients
-        var bgImage = style.backgroundImage;
-        if (bgImage && bgImage !== 'none') {
-          // Extract first color from gradient
-          var gradientMatch = bgImage.match(/rgba?\([^)]+\)|#[a-fA-F0-9]{3,8}/);
-          if (gradientMatch) {
-            return gradientMatch[0];
-          }
-        }
-        
-        el = el.parentElement;
-        maxDepth--;
-      }
-      
-      // Default to white if no background found (assume light)
-      return 'rgb(255, 255, 255)';
+
+    function applyColor(color) {
+      if (!color) return;
+      // Keep SVG on currentColor so frosted-scroll CSS / setScrolledColors can
+      // retint the globe by setting only the button's color.
+      try { svg.style.fill = 'currentColor'; } catch (e1) {}
+      try { svg.setAttribute('fill', 'currentColor'); } catch (e2) {}
+      switcher.style.color = color;
     }
-    
-    // Parse color string to RGB values
+
     function parseColor(colorStr) {
       if (!colorStr) return null;
-      
-      // Handle rgb/rgba
       var rgbMatch = colorStr.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/);
       if (rgbMatch) {
-        return {
-          r: parseInt(rgbMatch[1], 10),
-          g: parseInt(rgbMatch[2], 10),
-          b: parseInt(rgbMatch[3], 10)
-        };
+        return { r: parseInt(rgbMatch[1], 10), g: parseInt(rgbMatch[2], 10), b: parseInt(rgbMatch[3], 10) };
       }
-      
-      // Handle hex
       var hexMatch = colorStr.match(/#([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})/);
       if (hexMatch) {
-        return {
-          r: parseInt(hexMatch[1], 16),
-          g: parseInt(hexMatch[2], 16),
-          b: parseInt(hexMatch[3], 16)
-        };
+        return { r: parseInt(hexMatch[1], 16), g: parseInt(hexMatch[2], 16), b: parseInt(hexMatch[3], 16) };
       }
-      
-      // Handle 3-digit hex
       var hex3Match = colorStr.match(/#([a-fA-F0-9])([a-fA-F0-9])([a-fA-F0-9])$/);
       if (hex3Match) {
         return {
@@ -6543,46 +7192,144 @@ html[dir="rtl"] body {
           b: parseInt(hex3Match[3] + hex3Match[3], 16)
         };
       }
-      
       return null;
     }
-    
-    // Calculate relative luminance (WCAG formula)
+
     function getLuminance(rgb) {
-      if (!rgb) return 0.5; // Default to middle
-      
-      var r = rgb.r / 255;
-      var g = rgb.g / 255;
-      var b = rgb.b / 255;
-      
-      // Apply gamma correction
+      if (!rgb) return 0.5;
+      var r = rgb.r / 255, g = rgb.g / 255, b = rgb.b / 255;
       r = r <= 0.03928 ? r / 12.92 : Math.pow((r + 0.055) / 1.055, 2.4);
       g = g <= 0.03928 ? g / 12.92 : Math.pow((g + 0.055) / 1.055, 2.4);
       b = b <= 0.03928 ? b / 12.92 : Math.pow((b + 0.055) / 1.055, 2.4);
-      
       return 0.2126 * r + 0.7152 * g + 0.0722 * b;
     }
-    
-    // Get the effective background color
-    var bgColor = getEffectiveBackgroundColor(navbar);
-    var rgb = parseColor(bgColor);
-    var luminance = getLuminance(rgb);
-    
-    // Threshold: 0.5 is middle, lower = darker background
-    // Use 0.4 as threshold for better contrast
-    var isLightBackground = luminance > 0.4;
-    
-    // Set icon color based on background
-    // Light background = dark icon (#1a1a1a)
-    // Dark background = light icon (#F3FAFF)
-    var iconColor = isLightBackground ? '#1a1a1a' : '#F3FAFF';
-    
-    svg.style.fill = iconColor;
-    switcher.style.color = iconColor;
-    
-    console.log('[i18n] Language switcher icon color:', iconColor, 
-                '(bg luminance:', luminance.toFixed(2), 
-                ', isLight:', isLightBackground, ')');
+
+    function isOpaqueBg(bg) {
+      if (!bg || bg === 'transparent' || bg === 'rgba(0, 0, 0, 0)') return false;
+      var am = bg.match(/rgba\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*([\d.]+)/);
+      if (am && parseFloat(am[1]) < 0.6) return false;
+      return true;
+    }
+
+    function pickFromLuminance(rgb) {
+      return getLuminance(rgb) > 0.4 ? '#1a1a1a' : '#F3FAFF';
+    }
+
+    var isScrolled = navbar.classList.contains('scrolled');
+    var frostedText = '';
+    try { frostedText = (navbar.style.getPropertyValue('--frosted-text') || window.getComputedStyle(navbar).getPropertyValue('--frosted-text') || '').trim(); } catch (e3) {}
+
+    // 0) Frosted / scrolled transparent navbar — light glass needs a DARK globe.
+    //    Only when .scrolled is actually set (not merely because --frosted-text
+    //    happens to be defined as a CSS custom property elsewhere).
+    if (isScrolled) {
+      if (frostedText) {
+        applyColor(frostedText);
+        return;
+      }
+      var rootForFrost = window.getComputedStyle(document.documentElement);
+      var frostDark = (rootForFrost.getPropertyValue('--text-dark') || '').trim() || '#1a1a1a';
+      applyColor(frostDark);
+      return;
+    }
+
+    // 1) Match a real top-level nav link — contrast-correct at-top over hero.
+    var navLink = navbar.querySelector('.nav-menu > li > a, .nav-links > li > a, .nav-menu a, .nav-links a');
+    if (!navLink) {
+      navLink = navbar.querySelector('a:not(.lang-option):not(.lang-switcher-current):not([class*="logo"]):not(.logo-link)');
+    }
+    if (navLink) {
+      var linkColor = window.getComputedStyle(navLink).color;
+      if (linkColor && linkColor !== 'rgb(0, 0, 0)' && linkColor !== 'rgba(0, 0, 0, 0)') {
+        applyColor(linkColor);
+        return;
+      }
+    }
+
+    // 2) Prefer --nav-text (baked for transparent navbars over heroes) — at-top only.
+    var rootCs = window.getComputedStyle(document.documentElement);
+    var navText = (rootCs.getPropertyValue('--nav-text') || '').trim();
+    if (navText && navText.toLowerCase() !== 'currentcolor') {
+      applyColor(navText);
+      return;
+    }
+
+    var nbCs = window.getComputedStyle(navbar);
+    var bg = nbCs.backgroundColor;
+
+    // 3) Opaque navbar background → luminance pick.
+    if (isOpaqueBg(bg)) {
+      applyColor(pickFromLuminance(parseColor(bg)));
+      return;
+    }
+
+    // 4) Transparent navbar with a gradient scrim (e.g. rgba(0,0,0,.35) → clear):
+    //    use the darkest non-near-transparent stop — never the page body beneath.
+    var bi = nbCs.backgroundImage || '';
+    if (bi && bi !== 'none') {
+      var stops = bi.match(/rgba?\([^)]+\)|#[a-fA-F0-9]{3,8}/g) || [];
+      var darkest = null, darkestLum = 2;
+      for (var si = 0; si < stops.length; si++) {
+        var alphaM = stops[si].match(/rgba\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*([\d.]+)/);
+        if (alphaM && parseFloat(alphaM[1]) < 0.15) continue;
+        var pr = parseColor(stops[si]);
+        if (!pr) continue;
+        var sl = getLuminance(pr);
+        if (sl < darkestLum) { darkestLum = sl; darkest = pr; }
+      }
+      if (darkest) {
+        applyColor(pickFromLuminance(darkest));
+        return;
+      }
+    }
+
+    // 5) Transparent over hero media → light icon (do NOT walk to body/html).
+    function hasHeroMediaBehind() {
+      var hero = document.querySelector(
+        'section[class*="hero"], .hero, [data-zappy-section="hero"], main > section:first-of-type, body > section:first-of-type'
+      );
+      if (!hero) return false;
+      if (hero.querySelector('img, video, [data-hero-bg], .zappy-section-video-bg, .zappy-section-video')) return true;
+      var hbi = window.getComputedStyle(hero).backgroundImage || '';
+      return hbi.indexOf('url(') >= 0;
+    }
+    if (hasHeroMediaBehind()) {
+      var textLight = (rootCs.getPropertyValue('--text-light') || '').trim() || '#F3FAFF';
+      applyColor(textLight);
+      return;
+    }
+
+    // 6) Last resort for transparent nav without hero cue — prefer --text-light
+    //    over walking to body (cream page bg was the false "light navbar" signal).
+    var fallbackLight = (rootCs.getPropertyValue('--text-light') || '').trim() || '#F3FAFF';
+    applyColor(fallbackLight);
+  }
+
+  // Expose + re-run on frosted scroll so at-top (light) and scrolled (dark) both work.
+  window.fixLanguageSwitcherColor = fixLanguageSwitcherColor;
+  if (!window.__zappyLangSwitcherColorScrollBound) {
+    window.__zappyLangSwitcherColorScrollBound = true;
+    var _langColorScrollTimer = null;
+    function scheduleLangSwitcherColorFix() {
+      if (_langColorScrollTimer) return;
+      _langColorScrollTimer = setTimeout(function() {
+        _langColorScrollTimer = null;
+        try { fixLanguageSwitcherColor(); } catch (e4) {}
+      }, 16);
+    }
+    window.addEventListener('scroll', scheduleLangSwitcherColorFix, { passive: true });
+    window.addEventListener('resize', scheduleLangSwitcherColorFix, { passive: true });
+    if (typeof MutationObserver === 'function') {
+      try {
+        var _langNav = document.querySelector('.navbar') || document.querySelector('nav');
+        if (_langNav) {
+          new MutationObserver(scheduleLangSwitcherColorFix).observe(_langNav, {
+            attributes: true,
+            attributeFilter: ['class', 'style']
+          });
+        }
+      } catch (e5) {}
+    }
   }
   
   // Initialize on DOM ready
@@ -6631,6 +7378,10 @@ html[dir="rtl"] body {
 </script>
 
     <script src="/script.js"></script>
+
+    <script id="zappy-font-awesome-loader">
+(function(){if(window.__zappyFontAwesomeLoader)return;window.__zappyFontAwesomeLoader=true;var href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css';function load(){if(document.querySelector('link[href*="font-awesome"][href*="all.min.css"]'))return;var l=document.createElement('link');l.rel='stylesheet';l.href=href;l.crossOrigin='anonymous';l.referrerPolicy='no-referrer';document.head.appendChild(l);}function schedule(){if('requestIdleCallback'in window){requestIdleCallback(load,{timeout:5000});}else{setTimeout(load,3500);}}['pointerdown','keydown','touchstart','mouseover'].forEach(function(evt){window.addEventListener(evt,load,{once:true,passive:true});});schedule();})();
+</script>
 
     <script id="zappy-mobile-submenu-script">
     (function() {
@@ -6682,5 +7433,4 @@ html[dir="rtl"] body {
       }, 500);
     })();
     </script>
-</body>
-</html>
+</body></html>

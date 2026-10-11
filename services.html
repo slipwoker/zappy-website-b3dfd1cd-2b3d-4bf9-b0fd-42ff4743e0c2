@@ -230,6 +230,9 @@
   var ECOM_MODE = "";
   var IS_CATALOG = false;
   var IS_FULL = false;
+  var DIRECT_GA = false;
+  var DIRECT_META = false;
+  var GA_SEND_TO = "";
 
   var ECOM_ALIAS = {
     begin_checkout: 'checkout_started',
@@ -475,16 +478,18 @@
   }
   window.zappyFlushPendingMetaEvents = flushPendingMetaEvents;
 
-  var metaFlushAttempts = 0;
-  var metaFlushTimer = setInterval(function() {
-    metaFlushAttempts++;
-    flushPendingMetaEvents();
-    var pendingLen = 0;
-    try { pendingLen = (window.__zappyPendingMetaEvents || []).length; } catch (e) {}
-    if ((pendingLen === 0 && typeof window.fbq === 'function') || metaFlushAttempts > 60) {
-      clearInterval(metaFlushTimer);
-    }
-  }, 500);
+  if (DIRECT_META) {
+    var metaFlushAttempts = 0;
+    var metaFlushTimer = setInterval(function() {
+      metaFlushAttempts++;
+      flushPendingMetaEvents();
+      var pendingLen = 0;
+      try { pendingLen = (window.__zappyPendingMetaEvents || []).length; } catch (e) {}
+      if ((pendingLen === 0 && typeof window.fbq === 'function') || metaFlushAttempts > 60) {
+        clearInterval(metaFlushTimer);
+      }
+    }, 500);
+  }
 
   /**
    * Fire a marketing event to first-party analytics + GA4/GTM/Meta when present.
@@ -524,7 +529,9 @@
         } catch (e1) {}
       }
 
-      // GTM / dataLayer — platform-standard ecommerce event names
+      // GTM / dataLayer — platform-standard ecommerce event names.
+      // Always push. A bare gtag.js snippet ignores plain event objects;
+      // a GTM container is what turns them into GA4/Ads hits.
       if (!purchaseAlreadySent) {
         try {
           window.dataLayer = window.dataLayer || [];
@@ -535,9 +542,12 @@
             if (ga4ForGtm.value != null) ecommerce.value = ga4ForGtm.value;
             if (ga4ForGtm.currency) ecommerce.currency = ga4ForGtm.currency;
             if (ga4ForGtm.items) ecommerce.items = ga4ForGtm.items;
+            // Clear first so GTM does not merge this hit with the previous ecommerce object.
+            window.dataLayer.push({ ecommerce: null });
             window.dataLayer.push({ event: plat.gtm, ecommerce: ecommerce });
             // Secondary Zappy-specific trigger for merchants who want it
             if (eventId === 'checkout_complete' || eventId === 'checkout_started') {
+              window.dataLayer.push({ ecommerce: null });
               window.dataLayer.push({ event: eventId, ecommerce: ecommerce });
             }
           } else {
@@ -549,31 +559,49 @@
           }
         } catch (e2) {}
 
-        // GA4 gtag
-        try {
-          if (typeof window.gtag === 'function') {
-            window.gtag('event', plat.ga4, buildGa4Params(eventId, metadata));
-          }
-        } catch (e3) {}
+        // Direct Google Analytics snippet only. GTM also defines window.gtag;
+        // calling it then sends the same event again to every Google tag the
+        // container loaded. send_to keeps a direct GA install off those tags
+        // when the merchant also has GTM.
+        if (DIRECT_GA) {
+          try {
+            if (typeof window.gtag === 'function') {
+              var gaParams = buildGa4Params(eventId, metadata);
+              if (GA_SEND_TO && gaParams && typeof gaParams === 'object') {
+                var gaCopy = {};
+                for (var gk in gaParams) {
+                  if (Object.prototype.hasOwnProperty.call(gaParams, gk)) gaCopy[gk] = gaParams[gk];
+                }
+                gaCopy.send_to = GA_SEND_TO;
+                gaParams = gaCopy;
+              }
+              window.gtag('event', plat.ga4, gaParams);
+            }
+          } catch (e3) {}
+        }
 
         if (oid) markPurchaseFired(oid);
       }
 
-      // Meta Pixel — live sites lazy-load fbq after marketing consent. If the
-      // stub is not defined yet, queue and flush when the pixel arrives.
-      try {
-        if (purchaseMetaAlreadySent) {
-          // already delivered to Meta
-        } else {
-          var metaParams = buildMetaParams(eventId, metadata);
-          if (typeof window.fbq === 'function') {
-            window.fbq('track', plat.meta, metaParams);
-            if (oid) markPurchaseMetaFired(oid);
+      // Meta Pixel — only the Zappy pixel integration. A pixel pasted inside
+      // GTM already initializes fbq; calling it from here would double-count.
+      // Live sites lazy-load fbq after marketing consent. If the stub is not
+      // defined yet, queue and flush when the pixel arrives.
+      if (DIRECT_META) {
+        try {
+          if (purchaseMetaAlreadySent) {
+            // already delivered to Meta
           } else {
-            enqueueMetaEvent(plat.meta, metaParams, eventId === 'checkout_complete' ? oid : null);
+            var metaParams = buildMetaParams(eventId, metadata);
+            if (typeof window.fbq === 'function') {
+              window.fbq('track', plat.meta, metaParams);
+              if (oid) markPurchaseMetaFired(oid);
+            } else {
+              enqueueMetaEvent(plat.meta, metaParams, eventId === 'checkout_complete' ? oid : null);
+            }
           }
-        }
-      } catch (e4) {}
+        } catch (e4) {}
+      }
     } catch (err) {}
   };
 
@@ -687,7 +715,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="שירותים שמשנים חיים מהשורש — דיאנה אזולאי דיוק הנתיב מתוך הנשמה">
     <meta name="twitter:description" content="מתקשור קבלי ופענוח חלומות ועד ריפוי אנרגטי ומסעות רוחניים — כל שירות נבנה כדי לשחרר חסימות ודפוסים רגשיים נשמתיים ולהחזיר אותך לעצמך. בחרי את המסע שלך היום.">
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LocalBusiness","@id":"https://diana-azulay-dyuk-hanetiv-mito.zappy5.app#organization","name":"דיאנה אזולאי תקשור יהודי קבלי","url":"https://diana-azulay-dyuk-hanetiv-mito.zappy5.app","description":"Diana Azulay is a Jewish Kabbalistic communicator and soul coach who guides women through transformative journeys of clarity, emotional release, and spiritual alignment. Her brand blends ancient Jewish mysticism with modern personal development, creating a luxurious, feminine, and deeply trustworthy atmosphere. The visual identity draws on sacred geometry, soft light, and subtle Jewish symbols — evoking depth, inner peace, and divine guidance. She offers services ranging from Kabbalistic communication and dream interpretation to spiritual journeys and energetic healing, all rooted in helping women reconnect with their soul's path.","address":{"@type":"PostalAddress","streetAddress":"ספיר, חריש, ישראל"},"contactPoint":[{"@type":"ContactPoint","contactType":"customer service","email":"dianazulay888@gmail.com","telephone":"0526899936","availableLanguage":["he","en"]}]},{"@type":"WebSite","@id":"https://diana-azulay-dyuk-hanetiv-mito.zappy5.app#website","url":"https://diana-azulay-dyuk-hanetiv-mito.zappy5.app","name":"דיאנה אזולאי תקשור יהודי קבלי","publisher":{"@id":"https://diana-azulay-dyuk-hanetiv-mito.zappy5.app#organization"},"inLanguage":"he"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://diana-azulay-dyuk-hanetiv-mito.zappy5.app"},{"@type":"ListItem","position":2,"name":"Services","item":"https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/services"}]}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LocalBusiness","@id":"https://diana-azulay-dyuk-hanetiv-mito.zappy5.app#organization","name":"דיאנה אזולאי תקשור יהודי קבלי","url":"https://diana-azulay-dyuk-hanetiv-mito.zappy5.app","description":"Diana Azulay is a Jewish Kabbalistic communicator and soul coach who guides women through transformative journeys of clarity, emotional release, and spiritual alignment. Her brand blends ancient Jewish mysticism with modern personal development, creating a luxurious, feminine, and deeply trustworthy atmosphere. The visual identity draws on sacred geometry, soft light, and subtle Jewish symbols — evoking depth, inner peace, and divine guidance. She offers services ranging from Kabbalistic communication and dream interpretation to spiritual journeys and energetic healing, all rooted in helping women reconnect with their soul's path.","address":{"@type":"PostalAddress","streetAddress":"הגר\"א, נתניה, ישראל"},"contactPoint":[{"@type":"ContactPoint","contactType":"customer service","email":"dianazulay888@gmail.com","telephone":"0526899936","availableLanguage":["he","en"]}]},{"@type":"WebSite","@id":"https://diana-azulay-dyuk-hanetiv-mito.zappy5.app#website","url":"https://diana-azulay-dyuk-hanetiv-mito.zappy5.app","name":"דיאנה אזולאי תקשור יהודי קבלי","publisher":{"@id":"https://diana-azulay-dyuk-hanetiv-mito.zappy5.app#organization"},"inLanguage":"he"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://diana-azulay-dyuk-hanetiv-mito.zappy5.app"},{"@type":"ListItem","position":2,"name":"Services","item":"https://diana-azulay-dyuk-hanetiv-mito.zappy5.app/services"}]}]}</script>
     <title data-i18n="services_page_title">שירותים שמשנים חיים מהשורש — דיאנה אזולאי תקשור יהודי קבלי</title>
   
   
@@ -2163,7 +2191,7 @@ body:has(.zappy-announcement-bar) .navbar:not(.zappy-catalog-menu):not(.mobile-s
   <div class="nav-container">
     <div class="nav-right-group"><div class="nav-brand">
       <a href="/" class="logo-link"><img class="logo" src="/assets/spiritual-coaching-kabbalah-logo-1781197334035-p2o580.webp?v=1781197334418-cqe2oj" alt="דיאנה אזולאי תקשור יהודי קבלי" data-i18n-alt="home_alt_100" decoding="async" width="35" height="35"></a>
-    </div><ul class="nav-menu" id="navMenu"><li><a href="/about" data-i18n="home_nav_97">אודות</a></li><li><a href="/services" data-i18n="home_nav_96">שירותים</a><ul class="sub-menu"><li><a href="/personal-guidance-meeting" class="" data-i18n="new_a_210">פגישת דיוק והכוונה אישית</a></li><li><a href="/services/four-session-process" class="nav-link">4 פגישות</a></li></ul></li><li><a href="/blog" data-i18n="home_nav_98">בלוג</a></li><li class="nav-cta-item-mobile"><a href="/contact" data-i18n="home_nav_99">צור קשר</a></li><li><a href="/questions-and-answers" class="" data-i18n="new_a_225">שאלות ותשובות</a></li></ul></div>
+    </div><ul class="nav-menu" id="navMenu"><li><a href="/about" data-i18n="home_nav_97">אודות</a></li><li><a href="/services" data-i18n="home_nav_96">שירותים</a><ul class="sub-menu"><li><a href="/personal-guidance-meeting" class="" data-i18n="new_a_210">פגישת דיוק והכוונה אישית</a></li><li><a href="/services/four-session-process" class="nav-link" data-i18n="new_a_277">4 פגישות</a></li></ul></li><li><a href="/blog" data-i18n="home_nav_98">בלוג</a></li><li class="nav-cta-item-mobile"><a href="/contact" data-i18n="home_nav_99">צור קשר</a></li><li><a href="/questions-and-answers" class="" data-i18n="new_a_225">שאלות ותשובות</a></li></ul></div>
 
     
 
@@ -3274,11 +3302,7 @@ body:has(.zappy-announcement-bar) .navbar:not(.zappy-catalog-menu):not(.mobile-s
           <img src="/assets/spiritual-coaching-kabbalah-logo.webp" alt="דיאנה אזולאי תקשור יהודי קבלי" class="logo" data-i18n-alt="home_alt_102" decoding="async" width="35" height="35">
         </a>
         <p class="footer-tagline" data-i18n="home_p_36">ליווי רוחני מעמיק דרך חכמת הקבלה — מסע אל תוך הנשמה, לגילוי האור שבך ולחיים של שלמות ומשמעות אמיתית.</p>
-        <div class="footer-social" aria-label="רשתות חברתיות" data-i18n-aria-label="home_aria_label_106">
-          
-          
-          
-        </div>
+        <div class="footer-social" aria-label="רשתות חברתיות" data-i18n-aria-label="home_aria_label_106"><a href="https://facebook.com/diana.azulay" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a><a href="https://instagram.com/dianazulay8888" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a><a href="https://tiktok.com/@diana.kabbalah.coach" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><i class="fab fa-tiktok"></i></a><a href="https://wa.me/972526899936" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a></div>
       </div>
 
       <!-- Column 2: Quick Links -->
@@ -3305,8 +3329,8 @@ body:has(.zappy-announcement-bar) .navbar:not(.zappy-catalog-menu):not(.mobile-s
             <span class="contact-icon"><i class="fas fa-phone"></i></span>
             <span class="contact-text" data-i18n="home_span_51"><a href="tel:0526899936" data-i18n="home_link_80">0526899936</a></span>
           </li>
-          <li><a href="/" data-i18n="home_link_81"><span class="contact-icon"><i class="fas fa-map-marker-alt"></i></span>
-            <span class="contact-text">ספיר, חריש, ישראל</span></a></li>
+          <li><a href="https://www.google.com/maps/search/?api=1&amp;query=%D7%94%D7%92%D7%A8%22%D7%90%2C%20%D7%A0%D7%AA%D7%A0%D7%99%D7%94%2C%20%D7%99%D7%A9%D7%A8%D7%90%D7%9C" data-i18n="home_link_81" target="_blank" rel="noopener noreferrer"><span class="contact-icon"><i class="fas fa-map-marker-alt"></i></span>
+            <span class="contact-text">הגר"א, נתניה, ישראל</span></a></li>
         </ul>
         <div class="footer-badge" data-i18n="home_div_93">
           <i class="fas fa-star"></i>
@@ -3317,11 +3341,9 @@ body:has(.zappy-announcement-bar) .navbar:not(.zappy-catalog-menu):not(.mobile-s
       <!-- Column 4: Hours -->
       <div class="footer-col footer-hours">
         <h3 class="footer-heading" data-i18n="home_h3_15"><span class="heading-accent"></span>שעות פעילות</h3>
-        <ul class="hours-list" aria-label="שעות פעילות" data-i18n-aria-label="home_aria_label_109">
-          <li><a href="/" data-i18n="home_link_82"><span class="day">ראשון – חמישי</span><span class="time">09:00 – 20:00</span></a></li>
-          <li><a href="/" data-i18n="home_link_83"><span class="day">שישי</span><span class="time">09:00 – 14:00</span></a></li>
-          <li><a href="/" data-i18n="home_link_84"><span class="day">שבת</span><span class="time closed">סגור</span></a></li>
-        </ul>
+        <ul class="hours-list" aria-label="שעות פעילות" data-i18n-aria-label="home_aria_label_109"><li><a href="/" data-i18n="new_a_320"><span class="hours-day">יום א’</span> <span class="hours-time">סגור</span></a></li>
+<li><a href="/" data-i18n="new_a_323"><span class="hours-day">ימים ב’–ו’</span> <span class="hours-time">09:00–17:00</span></a></li>
+<li><a href="/" data-i18n="new_a_326"><span class="hours-day">שבת</span> <span class="hours-time">סגור</span></a></li></ul>
         <div class="footer-badge footer-badge--gold" data-i18n="home_div_94">
           <i class="fas fa-infinity"></i>
           <span>זמין לפגישות אונליין</span>
@@ -3359,6 +3381,10 @@ body:has(.zappy-announcement-bar) .navbar:not(.zappy-catalog-menu):not(.mobile-s
   </a>
   
   <div data-integration="accessibility:toolbar"></div>
+
+
+
+
 
 
 
@@ -3810,6 +3836,42 @@ body:has(.zappy-announcement-bar) .navbar:not(.zappy-catalog-menu):not(.mobile-s
       "new_a_307": "צרי קשר עכשיו",
       "new_a_308": "חזרי לשירותים",
       "new_a_309": "לחץ כאן",
+      "new_a_320": "<span class=\"hours-day\">יום א’</span> <span class=\"hours-time\">סגור</span>",
+      "new_a_323": "<span class=\"hours-day\">ימים ב’–ו’</span> <span class=\"hours-time\">09:00–17:00</span>",
+      "new_a_326": "<span class=\"hours-day\">שבת</span> <span class=\"hours-time\">סגור</span>",
+      "new_a_336": "<span class=\"hours-day\">יום א’</span> <span class=\"hours-time\">סגור</span>",
+      "new_a_339": "<span class=\"hours-day\">ימים ב’–ו’</span> <span class=\"hours-time\">09:00–17:00</span>",
+      "new_a_342": "<span class=\"hours-day\">שבת</span> <span class=\"hours-time\">סגור</span>",
+      "new_a_350": "<span class=\"hours-day\">יום א’</span> <span class=\"hours-time\">סגור</span>",
+      "new_a_353": "<span class=\"hours-day\">ימים ב’–ו’</span> <span class=\"hours-time\">09:00–17:00</span>",
+      "new_a_356": "<span class=\"hours-day\">שבת</span> <span class=\"hours-time\">סגור</span>",
+      "new_a_360": "<span class=\"hours-day\">יום א’</span> <span class=\"hours-time\">סגור</span>",
+      "new_a_363": "<span class=\"hours-day\">ימים ב’–ו’</span> <span class=\"hours-time\">09:00–17:00</span>",
+      "new_a_366": "<span class=\"hours-day\">שבת</span> <span class=\"hours-time\">סגור</span>",
+      "new_a_371": "<span class=\"hours-day\">יום א’</span> <span class=\"hours-time\">סגור</span>",
+      "new_a_374": "<span class=\"hours-day\">ימים ב’–ו’</span> <span class=\"hours-time\">09:00–17:00</span>",
+      "new_a_377": "<span class=\"hours-day\">שבת</span> <span class=\"hours-time\">סגור</span>",
+      "new_a_381": "הגר\"א, נתניה, ישראל",
+      "new_a_383": "<span class=\"hours-day\">יום א’</span> <span class=\"hours-time\">סגור</span>",
+      "new_a_386": "<span class=\"hours-day\">ימים ב’–ו’</span> <span class=\"hours-time\">09:00–17:00</span>",
+      "new_a_389": "<span class=\"hours-day\">שבת</span> <span class=\"hours-time\">סגור</span>",
+      "new_a_393": "הגר\"א, נתניה, ישראל",
+      "new_a_395": "<span class=\"hours-day\">יום א’</span> <span class=\"hours-time\">סגור</span>",
+      "new_a_398": "<span class=\"hours-day\">ימים ב’–ו’</span> <span class=\"hours-time\">09:00–17:00</span>",
+      "new_a_401": "<span class=\"hours-day\">שבת</span> <span class=\"hours-time\">סגור</span>",
+      "new_a_405": "הגר\"א, נתניה, ישראל",
+      "new_a_407": "<span class=\"hours-day\">יום א’</span> <span class=\"hours-time\">סגור</span>",
+      "new_a_410": "<span class=\"hours-day\">ימים ב’–ו’</span> <span class=\"hours-time\">09:00–17:00</span>",
+      "new_a_413": "<span class=\"hours-day\">שבת</span> <span class=\"hours-time\">סגור</span>",
+      "new_a_420": "<span class=\"hours-day\">יום א’</span> <span class=\"hours-time\">סגור</span>",
+      "new_a_423": "<span class=\"hours-day\">ימים ב’–ו’</span> <span class=\"hours-time\">09:00–17:00</span>",
+      "new_a_426": "<span class=\"hours-day\">שבת</span> <span class=\"hours-time\">סגור</span>",
+      "new_a_430": "<span class=\"hours-day\">יום א’</span> <span class=\"hours-time\">סגור</span>",
+      "new_a_433": "<span class=\"hours-day\">ימים ב’–ו’</span> <span class=\"hours-time\">09:00–17:00</span>",
+      "new_a_436": "<span class=\"hours-day\">שבת</span> <span class=\"hours-time\">סגור</span>",
+      "new_a_440": "<span class=\"hours-day\">יום א’</span> <span class=\"hours-time\">סגור</span>",
+      "new_a_443": "<span class=\"hours-day\">ימים ב’–ו’</span> <span class=\"hours-time\">09:00–17:00</span>",
+      "new_a_446": "<span class=\"hours-day\">שבת</span> <span class=\"hours-time\">סגור</span>",
       "new_p_171": "הצטרפו לאלפי לקוחות מרוצים. התחילו את המסע שלכם היום.",
       "new_p_174": "טקסט כאן",
       "new_p_175": "טקסט כאן",
@@ -3817,7 +3879,7 @@ body:has(.zappy-announcement-bar) .navbar:not(.zappy-catalog-menu):not(.mobile-s
       "new_p_185": "דרך תקשור יהודי קבלי ותורת החסידות אימון נפשי והכוונה רוחנית ניתן לזהות חסימות,להבין את שורש הקושי וליצור שינוי מתוך חיבור פנימי עמוק ונפתח דלת חדשה לחיים של דיוק איזון ומשמעות.",
       "new_p_187": "מאחורי כל קושי מסתתר שורש. דרך תקשור יהודי קבלי ותורת החסידות אימון נפשי והכוונה רוחנית ניתן לזהות חסימות,ודפוסים, לגלות את השורש שלהם וליצור דיוק,איזון,משמעות ושינוי אמיתי בחיים.",
       "new_p_190": "כל מפגש הוא הזמנה למסע פנימי, בליווי כלים קבליים עתיקים והכוונה נשית מדויקת, המותאמת במיוחד עבורך.",
-      "new_p_192": "מפגש עומק אישי בו נחשוף יחד את המסרים שהנשמה שלך מבקשת להעביר, דרך פרשנות קבלית מדויקת ושיח פתוח.",
+      "new_p_192": "מפגש ממוקד אישי בו נחשוף יחד את המסרים שהנשמה שלך מבקשת להעביר, דרך פרשנות קבלית מדויקת ושיח פתוח.",
       "new_p_195": "מרחב נשי אינטימי המשלב לימוד חווייתי של עקרונות קבליים, מדיטציה מונחית ושיתוף בקבוצה תומכת להעצמה והתחדשות.",
       "new_p_198": "מסע אל תת ההכרה דרך סמלי הקבלה. יחד נפענח את מסרי החלומות שלך ונגלה כיצד הם מכוונים אותך להגשמה יומיומית.",
       "new_p_201": "שחרור חסימות אנרגטיות באמצעות טכניקות הוליסטיות מעולם הקבלה, המאפשרות זרימה מחודשת של אור, חיוניות ושקט פנימי.",
@@ -4050,7 +4112,7 @@ body:has(.zappy-announcement-bar) .navbar:not(.zappy-catalog-menu):not(.mobile-s
       "terms_li_79": "אי-אכיפה של זכות לא תחשב כוויתור עליה",
       "terms_li_80": "תנאי השימוש מהווים את מלוא ההסכם בין הצדדים",
       "terms_li_81": "<strong>חברה:</strong> דיאנה אזולאי תקשור יהודי קבלי",
-      "terms_li_82": "<strong>כתובת:</strong> ספיר, חריש, ישראל",
+      "terms_li_82": "<strong>כתובת:</strong> הגר\"א, נתניה, ישראל",
       "about_div_88": "תקשור יהודי קבלי | אימון נפשי | מסעות רוחניים",
       "about_div_89": "דיוק הנתיבמתוך הנשמה",
       "about_div_90": "הסיפור שלי",
@@ -4171,7 +4233,7 @@ body:has(.zappy-announcement-bar) .navbar:not(.zappy-catalog-menu):not(.mobile-s
       "home_link_78": "צור קשר",
       "home_link_79": "dianazulay888@gmail.com",
       "home_link_80": "0526899936",
-      "home_link_81": "<span class=\"contact-icon\"><i class=\"fas fa-map-marker-alt\"></i></span>\n            <span class=\"contact-text\">ספיר, חריש, ישראל</span>",
+      "home_link_81": "<span class=\"contact-icon\"><i class=\"fas fa-map-marker-alt\"></i></span>\n            <span class=\"contact-text\">הגר\"א, נתניה, ישראל</span>",
       "home_link_82": "<span class=\"day\">ראשון – חמישי</span><span class=\"time\">09:00 – 20:00</span>",
       "home_link_83": "<span class=\"day\">שישי</span><span class=\"time\">09:00 – 14:00</span>",
       "home_link_84": "<span class=\"day\">שבת</span><span class=\"time closed\">סגור</span>",
@@ -4205,6 +4267,9 @@ body:has(.zappy-announcement-bar) .navbar:not(.zappy-catalog-menu):not(.mobile-s
       "new_span_271": "איך אני צריכה להתכונן לפגישה?",
       "new_span_273": "כמה זמן נמשכת פגישת תקשור והאם יש צורך במספר פגישות?",
       "new_span_275": "כיצד אוכל להתכונן למפגש תקשור כדי להפיק ממנו את המרב?",
+      "new_span_380": "הגר\"א, נתניה, ישראל",
+      "new_span_392": "הגר\"א, נתניה, ישראל",
+      "new_span_404": "הגר\"א, נתניה, ישראל",
       "privacy_h1_1": "מדיניות פרטיות",
       "privacy_h2_2": "מה אומרות הנשים שעברו את המסע",
       "privacy_h2_3": "1. איסוף מידע",
@@ -4308,7 +4373,7 @@ body:has(.zappy-announcement-bar) .navbar:not(.zappy-catalog-menu):not(.mobile-s
       "privacy_li_71": "זכות להתנגד לעיבוד מידע למטרות שיווק",
       "privacy_li_72": "זכות להגשת תלונה לרשם מאגרי המידע",
       "privacy_li_73": "<strong>חברה:</strong> דיאנה אזולאי תקשור יהודי קבלי",
-      "privacy_li_74": "<strong>כתובת:</strong> ספיר, חריש, ישראל",
+      "privacy_li_74": "<strong>כתובת:</strong> הגר\"א, נתניה, ישראל",
       "services_h1_1": "כל נתיב מוביל אל אותה נשמה",
       "services_h2_2": "השירותים שלי",
       "services_h2_3": "מה אומרות הנשים שעברו את המסע",
@@ -4434,7 +4499,7 @@ body:has(.zappy-announcement-bar) .navbar:not(.zappy-catalog-menu):not(.mobile-s
       "contact_span_48": "— דיאנה אזולאי",
       "contact_span_51": "dianazulay888@gmail.com",
       "contact_span_52": "0526899936",
-      "home_page_title": "התעוררי לנתיב נשמתך עם תקשור יהודי קבלי — דיאנה אזולאי תקשור יהודי קבלי",
+      "home_page_title": "שאלות ותשובות",
       "privacy_link_39": "דלג לתוכן הראשי",
       "privacy_link_40": "dianazulay888@gmail.com",
       "privacy_link_41": "0526899936",
@@ -5206,6 +5271,42 @@ body:has(.zappy-announcement-bar) .navbar:not(.zappy-catalog-menu):not(.mobile-s
       "new_a_307": "Contact Now",
       "new_a_308": "Return to Services",
       "new_a_309": "Click here",
+      "new_a_320": "<span class=\"hours-day\">Sunday</span> <span class=\"hours-time\">Closed</span>",
+      "new_a_323": "<span class=\"hours-day\">Mon–Fri</span> <span class=\"hours-time\">09:00–17:00</span>",
+      "new_a_326": "<span class=\"hours-day\">Saturday</span> <span class=\"hours-time\">Closed</span>",
+      "new_a_336": "<span class=\"hours-day\">Sunday</span> <span class=\"hours-time\">Closed</span>",
+      "new_a_339": "<span class=\"hours-day\">Mon–Fri</span> <span class=\"hours-time\">09:00–17:00</span>",
+      "new_a_342": "<span class=\"hours-day\">Saturday</span> <span class=\"hours-time\">Closed</span>",
+      "new_a_350": "<span class=\"hours-day\">Sunday</span> <span class=\"hours-time\">Closed</span>",
+      "new_a_353": "<span class=\"hours-day\">Mon–Fri</span> <span class=\"hours-time\">09:00–17:00</span>",
+      "new_a_356": "<span class=\"hours-day\">Saturday</span> <span class=\"hours-time\">Closed</span>",
+      "new_a_360": "<span class=\"hours-day\">Sunday</span> <span class=\"hours-time\">Closed</span>",
+      "new_a_363": "<span class=\"hours-day\">Mon–Fri</span> <span class=\"hours-time\">09:00–17:00</span>",
+      "new_a_366": "<span class=\"hours-day\">Saturday</span> <span class=\"hours-time\">Closed</span>",
+      "new_a_371": "<span class=\"hours-day\">Sunday</span> <span class=\"hours-time\">Closed</span>",
+      "new_a_374": "<span class=\"hours-day\">Mon–Fri</span> <span class=\"hours-time\">09:00–17:00</span>",
+      "new_a_377": "<span class=\"hours-day\">Saturday</span> <span class=\"hours-time\">Closed</span>",
+      "new_a_381": "HaGra, Netanya, Israel",
+      "new_a_383": "<span class=\"hours-day\">Sunday</span> <span class=\"hours-time\">Closed</span>",
+      "new_a_386": "<span class=\"hours-day\">Mon–Fri</span> <span class=\"hours-time\">09:00–17:00</span>",
+      "new_a_389": "<span class=\"hours-day\">Saturday</span> <span class=\"hours-time\">Closed</span>",
+      "new_a_393": "HaGra, Netanya, Israel",
+      "new_a_395": "<span class=\"hours-day\">Sunday</span> <span class=\"hours-time\">Closed</span>",
+      "new_a_398": "<span class=\"hours-day\">Mon–Fri</span> <span class=\"hours-time\">09:00–17:00</span>",
+      "new_a_401": "<span class=\"hours-day\">Saturday</span> <span class=\"hours-time\">Closed</span>",
+      "new_a_405": "HaGra, Netanya, Israel",
+      "new_a_407": "<span class=\"hours-day\">Sunday</span> <span class=\"hours-time\">Closed</span>",
+      "new_a_410": "<span class=\"hours-day\">Mon–Fri</span> <span class=\"hours-time\">09:00–17:00</span>",
+      "new_a_413": "<span class=\"hours-day\">Saturday</span> <span class=\"hours-time\">Closed</span>",
+      "new_a_420": "<span class=\"hours-day\">Sunday</span> <span class=\"hours-time\">Closed</span>",
+      "new_a_423": "<span class=\"hours-day\">Mon–Fri</span> <span class=\"hours-time\">09:00–17:00</span>",
+      "new_a_426": "<span class=\"hours-day\">Saturday</span> <span class=\"hours-time\">Closed</span>",
+      "new_a_430": "<span class=\"hours-day\">Sunday</span> <span class=\"hours-time\">Closed</span>",
+      "new_a_433": "<span class=\"hours-day\">Mon–Fri</span> <span class=\"hours-time\">09:00–17:00</span>",
+      "new_a_436": "<span class=\"hours-day\">Saturday</span> <span class=\"hours-time\">Closed</span>",
+      "new_a_440": "<span class=\"hours-day\">Sunday</span> <span class=\"hours-time\">Closed</span>",
+      "new_a_443": "<span class=\"hours-day\">Mon–Fri</span> <span class=\"hours-time\">09:00–17:00</span>",
+      "new_a_446": "<span class=\"hours-day\">Saturday</span> <span class=\"hours-time\">Closed</span>",
       "new_p_171": "Join thousands of satisfied clients. Start your journey today.",
       "new_p_174": "Text here",
       "new_p_175": "Text here",
@@ -5213,7 +5314,7 @@ body:has(.zappy-announcement-bar) .navbar:not(.zappy-catalog-menu):not(.mobile-s
       "new_p_185": "Through Jewish Kabbalistic communication and Chassidic teachings, psychological coaching and spiritual guidance, it is possible to identify blockages, understand the root of difficulties and create change from a deep inner connection, opening a new door to a life of precision, balance and meaning.",
       "new_p_187": "Behind every difficulty lies a root. Through Jewish Kabbalistic communication and Chassidic teachings, soul coaching and spiritual guidance, it is possible to identify blockages and patterns, discover their root, and create precision, balance, meaning and true change in life.",
       "new_p_190": "Each encounter is an invitation to an inner journey, accompanied by ancient Kabbalistic tools and precise feminine guidance, specially tailored for you.",
-      "new_p_192": "A deep personal session where we will uncover together the messages your soul seeks to convey, through precise Kabbalistic interpretation and open dialogue.",
+      "new_p_192": "A personalized focused session in which we will uncover together the messages your soul seeks to convey, through precise Kabbalistic interpretation and open dialogue.",
       "new_p_195": "An intimate feminine space that combines experiential learning of Kabbalistic principles, guided meditation, and sharing in a supportive group for empowerment and renewal.",
       "new_p_198": "A journey into the subconscious through Kabbalistic symbols. Together we will decode your dream messages and discover how they guide you toward daily fulfillment.",
       "new_p_201": "Release of energetic blockages through holistic techniques from the world of Kabbalah, enabling renewed flow of light, vitality, and inner peace.",
@@ -5446,7 +5547,7 @@ body:has(.zappy-announcement-bar) .navbar:not(.zappy-catalog-menu):not(.mobile-s
       "terms_li_79": "Non-enforcement of a right will not be considered a waiver of it",
       "terms_li_80": "The terms of use constitute the complete agreement between the parties",
       "terms_li_81": "<strong>Company:</strong> Diana Azulay Jewish Kabbalistic Communication",
-      "terms_li_82": "Address: ספיר, חריש, ישראל",
+      "terms_li_82": "<strong>Address:</strong> HaGra, Netanya, Israel",
       "about_div_88": "Jewish Kabbalistic Communication | Spiritual Coaching | Spiritual Journeys",
       "about_div_89": "Precision of the Path from Within the Soul",
       "about_div_90": "My Story",
@@ -5567,7 +5668,7 @@ body:has(.zappy-announcement-bar) .navbar:not(.zappy-catalog-menu):not(.mobile-s
       "home_link_78": "Contact",
       "home_link_79": "dianazulay888@gmail.com",
       "home_link_80": "0526899936",
-      "home_link_81": "ספיר, חריש, ישראל",
+      "home_link_81": "<span class=\"contact-icon\"><i class=\"fas fa-map-marker-alt\"></i></span>\n            <span class=\"contact-text\">HaGra, Netanya, Israel</span>",
       "home_link_82": "Sunday – Thursday09:00 – 20:00",
       "home_link_83": "Friday09:00 – 14:00",
       "home_link_84": "SaturdayClosed",
@@ -5601,6 +5702,9 @@ body:has(.zappy-announcement-bar) .navbar:not(.zappy-catalog-menu):not(.mobile-s
       "new_span_271": "How should I prepare for the session?",
       "new_span_273": "How long does a communication session last and is there a need for multiple sessions?",
       "new_span_275": "How can I prepare for a communication session to get the most out of it?",
+      "new_span_380": "HaGra, Netanya, Israel",
+      "new_span_392": "HaGra, Netanya, Israel",
+      "new_span_404": "HaGra, Netanya, Israel",
       "privacy_h1_1": "Privacy Policy",
       "privacy_h2_2": "What Women Who Went Through the Journey Say",
       "privacy_h2_3": "1. Information Collection",
@@ -5704,7 +5808,7 @@ body:has(.zappy-announcement-bar) .navbar:not(.zappy-catalog-menu):not(.mobile-s
       "privacy_li_71": "Right to object to information processing for marketing purposes",
       "privacy_li_72": "Right to file a complaint with the Data Protection Authority",
       "privacy_li_73": "<strong>Company:</strong> Diana Azulay Jewish Kabbalistic Communication",
-      "privacy_li_74": "Address: ספיר, חריש, ישראל",
+      "privacy_li_74": "<strong>Address:</strong> HaGra, Netanya, Israel",
       "services_h1_1": "Every path leads to the same soul",
       "services_h2_2": "My Services",
       "services_h2_3": "What women who went through the journey say",
@@ -5830,7 +5934,7 @@ body:has(.zappy-announcement-bar) .navbar:not(.zappy-catalog-menu):not(.mobile-s
       "contact_span_48": "— Diana Azulay",
       "contact_span_51": "dianazulay888@gmail.com",
       "contact_span_52": "0526899936",
-      "home_page_title": "Awaken to Your Soul's Path with Jewish Kabbalistic Channeling — Diana Azulay Jewish Kabbalistic Channeling",
+      "home_page_title": "Questions and Answers",
       "privacy_link_39": "Skip to main content",
       "privacy_link_40": "dianazulay888@gmail.com",
       "privacy_link_41": "0526899936",
@@ -6115,7 +6219,7 @@ body:has(.zappy-announcement-bar) .navbar:not(.zappy-catalog-menu):not(.mobile-s
       "accessibility_span_25": "dianazulay888@gmail.com",
       "accessibility_span_26": "0526899936",
       "blog_meta_description": "Deep articles on Kabbalah, relationships, purpose and emotional release — written from the heart and soul. Receive messages from the root of the soul that will help you with guidance and relationship improvement, self-empowerment and finding your true path.",
-      "home_meta_description": "Diana Azulay guides women on a transformative journey of clarity, emotional release and spiritual alignment through Jewish Kabbalistic communication. Discover your soul's root and begin living your true purpose.",
+      "home_meta_description": "Diana Azulay guides women on a transformative journey of clarity, emotional release, and spiritual alignment through Jewish Kabbalistic channeling. Discover the root of your soul and begin living your true purpose.",
       "legal_privacy_link_20": "dianazulay888@gmail.com",
       "legal_privacy_link_21": "0526899936",
       "legal_privacy_link_22": "← Back to website",
